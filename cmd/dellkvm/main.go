@@ -3,11 +3,9 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -115,11 +113,12 @@ func run(args []string) error {
 			return usageError(l.T("UsageSwitch", nil))
 		}
 		return printSwitch(args[1])
-	case "learn":
+	case "help", "--help", "-h":
 		if len(args) != 1 {
-			return usageError(l.T("UsageLearn", nil))
+			return usageError(l.T("UsageRoot", nil))
 		}
-		return learnConfig()
+		printHelp(l)
+		return nil
 	default:
 		return usageError(l.T("UsageRoot", nil))
 	}
@@ -165,23 +164,6 @@ func loadConfig() (Config, error) {
 	}
 
 	return Config{}, fmt.Errorf("%w: %s", errConfigNotFound, strings.Join(paths, ", "))
-}
-
-func saveConfig(cfg Config) error {
-	path, err := writableConfigPath()
-	if err != nil {
-		return err
-	}
-	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
-		return err
-	}
-
-	data, err := toml.Marshal(cfg)
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	return os.WriteFile(path, data, 0o600)
 }
 
 func ensureConfig() (Config, error) {
@@ -262,14 +244,6 @@ func ddcTimeoutError(l appLocalizer, args []string, raw string) error {
 
 func detectDisplays(l appLocalizer) (string, error) {
 	return runDDC(l, "detect", "--brief")
-}
-
-func getCurrentCode(cfg Config) (string, string, error) {
-	state, err := getCurrentState(cfg, localizerForConfig(cfg))
-	if err != nil {
-		return "", "", err
-	}
-	return state.Code, state.Raw, nil
 }
 
 func getCurrentState(cfg Config, l appLocalizer) (currentState, error) {
@@ -382,62 +356,6 @@ func parseVCPCodeWithLocalizer(raw string, l appLocalizer) (string, error) {
 	return fmt.Sprintf("0x%02x", value), nil
 }
 
-func learnConfig() error {
-	reader := bufio.NewReader(os.Stdin)
-	l := defaultLocalizer()
-
-	cfg, err := loadConfig()
-	if errors.Is(err, errConfigNotFound) {
-		bus, err := askBus(reader, l)
-		if err != nil {
-			return err
-		}
-		cfg = Config{Bus: bus, Language: defaultLanguage, Inputs: []Input{}}
-	} else if err != nil {
-		return err
-	} else {
-		if _, err := normalizeLanguage(cfg.Language); err != nil {
-			return err
-		}
-		l = localizerForConfig(cfg)
-	}
-
-	if cfg.Bus <= 0 {
-		bus, err := askBus(reader, l)
-		if err != nil {
-			return err
-		}
-		cfg.Bus = bus
-	}
-
-	inputs := defaultInputs()
-	for i := range inputs {
-		fmt.Print(l.T("LearnPrompt", map[string]any{"Name": inputs[i].Name}))
-		if _, err := readLine(reader); err != nil {
-			return err
-		}
-
-		code, _, err := getCurrentCode(Config{Bus: cfg.Bus, Language: cfg.Language, Inputs: inputs})
-		if err != nil {
-			return fmt.Errorf("%s: %w", l.T("LearnCodeReadFailed", map[string]any{"ID": inputs[i].ID}), err)
-		}
-		inputs[i].Code = code
-		fmt.Printf("%s -> %s\n", inputs[i].ID, code)
-	}
-
-	cfg.Inputs = inputs
-	if err := saveConfig(cfg); err != nil {
-		return err
-	}
-
-	path, err := writableConfigPath()
-	if err != nil {
-		return err
-	}
-	fmt.Println(l.T("ConfigSaved", map[string]any{"Path": path}))
-	return nil
-}
-
 func runTUI() error {
 	cfg, err := ensureConfig()
 	if err != nil {
@@ -499,25 +417,6 @@ func configPaths() ([]string, error) {
 	return []string{localConfigPath(), userPath}, nil
 }
 
-func writableConfigPath() (string, error) {
-	paths, err := configPaths()
-	if err != nil {
-		return "", err
-	}
-
-	for _, path := range paths {
-		_, err := os.Stat(path)
-		if err == nil {
-			return path, nil
-		}
-		if !errors.Is(err, os.ErrNotExist) {
-			return "", err
-		}
-	}
-
-	return userConfigPath()
-}
-
 func localConfigPath() string {
 	return "config.toml"
 }
@@ -537,31 +436,8 @@ func printOutput(out string) {
 	}
 }
 
-func askBus(reader *bufio.Reader, l appLocalizer) (int, error) {
-	for {
-		fmt.Print(l.T("BusPrompt", nil))
-		line, err := readLine(reader)
-		if err != nil {
-			return 0, err
-		}
-
-		bus, err := strconv.Atoi(line)
-		if err == nil && bus > 0 {
-			return bus, nil
-		}
-		fmt.Println(l.T("InvalidBusPrompt", nil))
-	}
-}
-
-func readLine(reader *bufio.Reader) (string, error) {
-	line, err := reader.ReadString('\n')
-	if err != nil && !errors.Is(err, io.EOF) {
-		return "", err
-	}
-	if errors.Is(err, io.EOF) && strings.TrimSpace(line) == "" {
-		return "", io.EOF
-	}
-	return strings.TrimSpace(line), nil
+func printHelp(l appLocalizer) {
+	fmt.Println(l.T("Help", nil))
 }
 
 func defaultInputs() []Input {

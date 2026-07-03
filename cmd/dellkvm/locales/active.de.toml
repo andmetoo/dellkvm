@@ -7,17 +7,17 @@ other = "Verwendung: dellkvm current"
 [UsageSwitch]
 other = "Verwendung: dellkvm switch <id>"
 
-[UsageLearn]
-other = "Verwendung: dellkvm learn"
-
 [UsageRoot]
-other = "Verwendung: dellkvm [detect|current|switch <id>|learn]"
+other = "Verwendung: dellkvm [detect|current|switch <id>|help]"
+
+[Help]
+other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  detect       gibt ddcutil detect --brief aus\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird die TUI geöffnet.\nKonfiguration: Kopiere config.toml.default nach config.toml oder ~/.config/dellkvm/config.toml und bearbeite sie. Nutze dellkvm detect, um einen bus zu finden, oder behalte bus = 0 für Auto-Erkennung."
 
 [ConfigReadFailed]
 other = "{{.Path}} konnte nicht gelesen werden"
 
 [ConfigNotFound]
-other = "Konfiguration nicht gefunden. Geprüfte Pfade: {{.Paths}}\nAusführen: dellkvm learn"
+other = "Konfiguration nicht gefunden. Geprüfte Pfade: {{.Paths}}\nKopiere config.toml.default nach config.toml oder ~/.config/dellkvm/config.toml und bearbeite sie."
 
 [InvalidBus]
 other = "in config.toml muss bus 0 für Auto-Erkennung oder eine positive Nummer sein"
@@ -49,26 +49,11 @@ other = "sl=0x.. wurde in der getvcp-Ausgabe nicht gefunden:\n{{.Raw}}"
 [VCPCodeParseFailed]
 other = "sl=0x{{.Value}} konnte nicht geparst werden"
 
-[LearnPrompt]
-other = "Schalte den Monitor per OSD auf {{.Name}} um und drücke Enter..."
-
-[LearnCodeReadFailed]
-other = "Code für {{.ID}} konnte nicht gelesen werden"
-
-[ConfigSaved]
-other = "Konfiguration gespeichert: {{.Path}}"
-
 [CurrentCode]
 other = "Aktueller Eingang: {{.Code}} (bus {{.Bus}})"
 
 [CurrentInput]
 other = "Aktueller Eingang: {{.Name}} ({{.ID}}, {{.Code}}, bus {{.Bus}})"
-
-[BusPrompt]
-other = "Bus: "
-
-[InvalidBusPrompt]
-other = "Gib eine positive bus-Nummer ein, zum Beispiel 6."
 
 [MissingDDC]
 other = "ddcutil wurde nicht gefunden. Installiere es mit: sudo dnf install ddcutil i2c-tools"
@@ -104,10 +89,10 @@ other = "bus-Auto-Erkennung fand keine Displays in der Ausgabe von ddcutil detec
 other = "bus-Auto-Erkennung prüfte {{.Buses}}, aber kein bus antwortete auf getvcp {{.VCP}}"
 
 [NoMonitorUnknownBus]
-other = "Monitor auf dem ausgewählten bus nicht gefunden. Prüfe verfügbare Displays: dellkvm detect. Korrigiere danach bus in config.toml oder führe aus: dellkvm learn"
+other = "Monitor auf dem ausgewählten bus nicht gefunden. Prüfe verfügbare Displays: dellkvm detect. Korrigiere danach bus in config.toml, oder behalte bus = 0 für Auto-Erkennung"
 
 [NoMonitorBus]
-other = "Monitor auf bus {{.Bus}} nicht gefunden. Prüfe verfügbare Displays: dellkvm detect. Korrigiere danach bus in config.toml oder führe aus: dellkvm learn"
+other = "Monitor auf bus {{.Bus}} nicht gefunden. Prüfe verfügbare Displays: dellkvm detect. Korrigiere danach bus in config.toml, oder behalte bus = 0 für Auto-Erkennung"
 
 [ListTitle]
 other = "Eingänge"

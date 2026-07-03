@@ -7,17 +7,17 @@ other = "用法：dellkvm current"
 [UsageSwitch]
 other = "用法：dellkvm switch <id>"
 
-[UsageLearn]
-other = "用法：dellkvm learn"
-
 [UsageRoot]
-other = "用法：dellkvm [detect|current|switch <id>|learn]"
+other = "用法：dellkvm [detect|current|switch <id>|help]"
+
+[Help]
+other = "用法：dellkvm [command]\n\n命令：\n  detect       输出 ddcutil detect --brief\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开 TUI。\n配置：将 config.toml.default 复制到 config.toml 或 ~/.config/dellkvm/config.toml 并编辑它。使用 dellkvm detect 查找 bus，或保留 bus = 0 进行自动检测。"
 
 [ConfigReadFailed]
 other = "无法读取 {{.Path}}"
 
 [ConfigNotFound]
-other = "未找到配置。已检查路径：{{.Paths}}\n运行：dellkvm learn"
+other = "未找到配置。已检查路径：{{.Paths}}\n将 config.toml.default 复制到 config.toml 或 ~/.config/dellkvm/config.toml 并编辑它。"
 
 [InvalidBus]
 other = "config.toml 中 bus 必须为 0（自动检测）或正数"
@@ -49,26 +49,11 @@ other = "getvcp 输出中未找到 sl=0x..：\n{{.Raw}}"
 [VCPCodeParseFailed]
 other = "无法解析 sl=0x{{.Value}}"
 
-[LearnPrompt]
-other = "请通过 OSD 将显示器切换到 {{.Name}}，然后按 Enter..."
-
-[LearnCodeReadFailed]
-other = "无法读取 {{.ID}} 的代码"
-
-[ConfigSaved]
-other = "配置已保存：{{.Path}}"
-
 [CurrentCode]
 other = "当前输入：{{.Code}} (bus {{.Bus}})"
 
 [CurrentInput]
 other = "当前输入：{{.Name}} ({{.ID}}, {{.Code}}, bus {{.Bus}})"
-
-[BusPrompt]
-other = "Bus: "
-
-[InvalidBusPrompt]
-other = "请输入正数 bus 编号，例如 6。"
 
 [MissingDDC]
 other = "未找到 ddcutil。请安装：sudo dnf install ddcutil i2c-tools"
@@ -104,10 +89,10 @@ other = "bus 自动检测在 ddcutil detect --brief 输出中未找到显示器"
 other = "bus 自动检测检查了 {{.Buses}}，但没有 bus 响应 getvcp {{.VCP}}"
 
 [NoMonitorUnknownBus]
-other = "在所选 bus 上未找到显示器。查看可用显示器：dellkvm detect。然后修正 config.toml 中的 bus 或运行：dellkvm learn"
+other = "在所选 bus 上未找到显示器。查看可用显示器：dellkvm detect。然后修正 config.toml 中的 bus，或保留 bus = 0 进行自动检测"
 
 [NoMonitorBus]
-other = "在 bus {{.Bus}} 上未找到显示器。查看可用显示器：dellkvm detect。然后修正 config.toml 中的 bus 或运行：dellkvm learn"
+other = "在 bus {{.Bus}} 上未找到显示器。查看可用显示器：dellkvm detect。然后修正 config.toml 中的 bus，或保留 bus = 0 进行自动检测"
 
 [ListTitle]
 other = "输入"

@@ -70,4 +70,4 @@ For example, on a Dell U2725QE, `19: Unrecognized value` may be Thunderbolt / US
 - `dellkvm detect` prints `ddcutil detect --brief`.
 - `dellkvm current` shows the current input.
 - `dellkvm switch <id>` switches to a configured input.
-- `dellkvm learn` creates or updates the config by reading input codes.
+- `dellkvm help` shows CLI help.

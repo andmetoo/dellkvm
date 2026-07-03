@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"errors"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -132,6 +133,101 @@ code = "0x0f"
 	}
 }
 
+func TestRunHelp(t *testing.T) {
+	tests := []struct {
+		name string
+		args []string
+	}{
+		{name: "help command", args: []string{"help"}},
+		{name: "long flag", args: []string{"--help"}},
+		{name: "short flag", args: []string{"-h"}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			out, err := captureStdout(t, func() error {
+				return run(tt.args)
+			})
+			if err != nil {
+				t.Fatalf("run(%v) error = %v, want nil", tt.args, err)
+			}
+			for _, want := range []string{
+				"Usage: dellkvm [command]",
+				"detect",
+				"current",
+				"switch <id>",
+				"help",
+				"config.toml.default",
+			} {
+				if !strings.Contains(out, want) {
+					t.Fatalf("run(%v) output = %q, want %q", tt.args, out, want)
+				}
+			}
+		})
+	}
+}
+
+func TestRunLearnIsUsageErrorAndDoesNotTouchConfig(t *testing.T) {
+	t.Run("does not create config", func(t *testing.T) {
+		home := t.TempDir()
+		t.Setenv("HOME", home)
+		cwd := t.TempDir()
+		t.Chdir(cwd)
+
+		err := run([]string{"learn"})
+		if err == nil {
+			t.Fatal("run([learn]) error = nil, want usage error")
+		}
+		var usage usageError
+		if !errors.As(err, &usage) {
+			t.Fatalf("run([learn]) error = %v, want usageError", err)
+		}
+
+		for _, path := range []string{
+			filepath.Join(cwd, "config.toml"),
+			filepath.Join(home, ".config", "dellkvm", "config.toml"),
+		} {
+			if _, statErr := os.Stat(path); !errors.Is(statErr, os.ErrNotExist) {
+				t.Fatalf("config path %s exists or stat failed with %v, want not exist", path, statErr)
+			}
+		}
+	})
+
+	t.Run("does not modify existing configs", func(t *testing.T) {
+		home := t.TempDir()
+		t.Setenv("HOME", home)
+		cwd := t.TempDir()
+		t.Chdir(cwd)
+
+		localPath := filepath.Join(cwd, "config.toml")
+		userPath := filepath.Join(home, ".config", "dellkvm", "config.toml")
+		if err := os.MkdirAll(filepath.Dir(userPath), 0o700); err != nil {
+			t.Fatalf("mkdir user config dir: %v", err)
+		}
+
+		localConfig := "bus = 6\n"
+		userConfig := "bus = 9\n"
+		if err := os.WriteFile(localPath, []byte(localConfig), 0o600); err != nil {
+			t.Fatalf("write local config: %v", err)
+		}
+		if err := os.WriteFile(userPath, []byte(userConfig), 0o600); err != nil {
+			t.Fatalf("write user config: %v", err)
+		}
+
+		err := run([]string{"learn"})
+		if err == nil {
+			t.Fatal("run([learn]) error = nil, want usage error")
+		}
+		var usage usageError
+		if !errors.As(err, &usage) {
+			t.Fatalf("run([learn]) error = %v, want usageError", err)
+		}
+
+		assertFileContent(t, localPath, localConfig)
+		assertFileContent(t, userPath, userConfig)
+	})
+}
+
 func TestSupportedLanguagesLoad(t *testing.T) {
 	for _, lang := range supportedLanguages {
 		t.Run(lang, func(t *testing.T) {
@@ -206,7 +302,7 @@ func TestDDCCommandErrorNoMonitor(t *testing.T) {
 		t.Fatalf("ddcCommandError() error = %v, want errNoMonitor", err)
 	}
 	message := err.Error()
-	for _, want := range []string{"monitor not found on bus 6", "dellkvm detect", "config.toml", "dellkvm learn"} {
+	for _, want := range []string{"monitor not found on bus 6", "dellkvm detect", "config.toml", "bus = 0"} {
 		if !strings.Contains(message, want) {
 			t.Fatalf("ddcCommandError() error = %q, want %q", message, want)
 		}
@@ -582,4 +678,45 @@ func containsArg(args []string, want string) bool {
 		}
 	}
 	return false
+}
+
+func captureStdout(t *testing.T, fn func() error) (string, error) {
+	t.Helper()
+
+	oldStdout := os.Stdout
+	read, write, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("pipe stdout: %v", err)
+	}
+	os.Stdout = write
+	defer func() {
+		os.Stdout = oldStdout
+	}()
+
+	runErr := fn()
+
+	os.Stdout = oldStdout
+	if err := write.Close(); err != nil {
+		t.Fatalf("close stdout writer: %v", err)
+	}
+	out, err := io.ReadAll(read)
+	if err != nil {
+		t.Fatalf("read stdout: %v", err)
+	}
+	if err := read.Close(); err != nil {
+		t.Fatalf("close stdout reader: %v", err)
+	}
+	return string(out), runErr
+}
+
+func assertFileContent(t *testing.T, path string, want string) {
+	t.Helper()
+
+	got, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("read %s: %v", path, err)
+	}
+	if string(got) != want {
+		t.Fatalf("%s = %q, want %q", path, got, want)
+	}
 }
