@@ -1,0 +1,20 @@
+# 0 = auto-detect DDC/I2C bus with ddcutil detect --brief.
+bus = 0
+
+# Supported languages: en, ru, fr, de, zh.
+language = "en"
+
+[[inputs]]
+id = "tb"
+name = "Thunderbolt / USB-C"
+code = "0x19"
+
+[[inputs]]
+id = "dp"
+name = "DisplayPort"
+code = "0x0f"
+
+[[inputs]]
+id = "hdmi"
+name = "HDMI"
+code = "0x11"

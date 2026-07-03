@@ -1,0 +1,140 @@
+[UsageDetect]
+other = "Verwendung: dellkvm detect"
+
+[UsageCurrent]
+other = "Verwendung: dellkvm current"
+
+[UsageSwitch]
+other = "Verwendung: dellkvm switch <id>"
+
+[UsageLearn]
+other = "Verwendung: dellkvm learn"
+
+[UsageRoot]
+other = "Verwendung: dellkvm [detect|current|switch <id>|learn]"
+
+[ConfigReadFailed]
+other = "{{.Path}} konnte nicht gelesen werden"
+
+[ConfigNotFound]
+other = "Konfiguration nicht gefunden. Geprüfte Pfade: {{.Paths}}\nAusführen: dellkvm learn"
+
+[InvalidBus]
+other = "in config.toml muss bus 0 für Auto-Erkennung oder eine positive Nummer sein"
+
+[MissingInputs]
+other = "config.toml muss mindestens einen input enthalten"
+
+[InputNotFound]
+other = "input mit id {{.ID}} wurde in config.toml nicht gefunden"
+
+[SwitchSentNoVerify]
+other = "Umschaltbefehl an {{.Name}} ({{.ID}}, {{.Code}}) über bus {{.Bus}} gesendet, aber der Monitor antwortet noch nicht auf die getvcp-{{.VCP}}-Prüfung: {{.Error}}"
+
+[SwitchVerifiedCode]
+other = "Auf {{.Name}} ({{.ID}}, {{.Code}}) über bus {{.Bus}} umgeschaltet. Prüfung: aktueller Code {{.CurrentCode}}"
+
+[SwitchVerifiedInput]
+other = "Auf {{.Name}} ({{.ID}}, {{.Code}}) über bus {{.Bus}} umgeschaltet. Prüfung: {{.CurrentName}} ({{.CurrentCode}})"
+
+[SwitchVerificationMismatch]
+other = "Umschaltbefehl an {{.Name}} ({{.ID}}, {{.Requested}}) über bus {{.Bus}} gesendet, aber die Prüfung meldete {{.Observed}}."
+
+[AutoDetectedPrefix]
+other = "Bus {{.Bus}} automatisch erkannt. {{.Message}}"
+
+[VCPCodeNotFound]
+other = "sl=0x.. wurde in der getvcp-Ausgabe nicht gefunden:\n{{.Raw}}"
+
+[VCPCodeParseFailed]
+other = "sl=0x{{.Value}} konnte nicht geparst werden"
+
+[LearnPrompt]
+other = "Schalte den Monitor per OSD auf {{.Name}} um und drücke Enter..."
+
+[LearnCodeReadFailed]
+other = "Code für {{.ID}} konnte nicht gelesen werden"
+
+[ConfigSaved]
+other = "Konfiguration gespeichert: {{.Path}}"
+
+[CurrentCode]
+other = "Aktueller Eingang: {{.Code}} (bus {{.Bus}})"
+
+[CurrentInput]
+other = "Aktueller Eingang: {{.Name}} ({{.ID}}, {{.Code}}, bus {{.Bus}})"
+
+[BusPrompt]
+other = "Bus: "
+
+[InvalidBusPrompt]
+other = "Gib eine positive bus-Nummer ein, zum Beispiel 6."
+
+[MissingDDC]
+other = "ddcutil wurde nicht gefunden. Installiere es mit: sudo dnf install ddcutil i2c-tools"
+
+[I2CAccess]
+other = "Füge deinen Benutzer zur Gruppe i2c hinzu: sudo usermod -aG i2c $USER, melde dich danach neu an"
+
+[NoI2CDevices]
+other = "Keine I2C-Geräte gefunden. Lade das Modul: sudo modprobe i2c-dev. Wenn das nicht hilft, prüfe DDC/CI im OSD des Monitors"
+
+[DDCRetry]
+other = "Monitor gefunden, aber die DDC/VCP-Anfrage bekam keine stabile Antwort. Das sieht nicht nach einem sudo-Problem aus. Prüfe DDC/CI im OSD des Monitors, Kabel, Dock oder Port; Umschalten kann trotzdem funktionieren, auch wenn das Lesen des aktuellen Eingangs instabil ist"
+
+[DDCTimeout]
+other = "ddcutil-Befehl hat nach {{.Seconds}}s das Zeitlimit erreicht: ddcutil {{.Command}}"
+
+[DDCTimeoutWithOutput]
+other = "ddcutil-Befehl hat nach {{.Seconds}}s das Zeitlimit erreicht: ddcutil {{.Command}}\n{{.Raw}}"
+
+[DDCCommandFailedNoOutput]
+other = "ddcutil {{.Command}}: {{.Error}}"
+
+[DDCCommandFailedWithOutput]
+other = "ddcutil {{.Command}}: {{.Error}}\n{{.Raw}}"
+
+[AutoDetectFailed]
+other = "bus-Auto-Erkennung fehlgeschlagen"
+
+[AutoDetectNoDisplays]
+other = "bus-Auto-Erkennung fand keine Displays in der Ausgabe von ddcutil detect --brief"
+
+[AutoDetectNoResponsive]
+other = "bus-Auto-Erkennung prüfte {{.Buses}}, aber kein bus antwortete auf getvcp {{.VCP}}"
+
+[NoMonitorUnknownBus]
+other = "Monitor auf dem ausgewählten bus nicht gefunden. Prüfe verfügbare Displays: dellkvm detect. Korrigiere danach bus in config.toml oder führe aus: dellkvm learn"
+
+[NoMonitorBus]
+other = "Monitor auf bus {{.Bus}} nicht gefunden. Prüfe verfügbare Displays: dellkvm detect. Korrigiere danach bus in config.toml oder führe aus: dellkvm learn"
+
+[ListTitle]
+other = "Eingänge"
+
+[Refreshing]
+other = "Aktueller Eingang wird aktualisiert..."
+
+[Switching]
+other = "Schalte auf {{.Name}} um..."
+
+[ErrorPrefix]
+other = "Fehler: {{.Error}}"
+
+[CurrentRefreshed]
+other = "Aktueller Eingang über bus {{.Bus}} aktualisiert."
+
+[CurrentCodeNotFound]
+other = "Aktueller Code wurde in config.toml nicht gefunden."
+
+[TuiCurrentUnknown]
+other = "Aktueller Eingang: unbekannt"
+
+[TuiCurrentInput]
+other = "Aktueller Eingang: {{.Name}} ({{.Code}}, bus {{.Bus}})"
+
+[TuiCurrentCode]
+other = "Aktueller Eingang: {{.Code}} (bus {{.Bus}})"
+
+[Keys]
+other = "Enter: umschalten  r: aktualisieren  q/Ctrl+C: beenden"

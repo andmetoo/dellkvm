@@ -1,0 +1,36 @@
+version: 2
+
+project_name: dellkvm
+dist: dist
+
+builds:
+  - id: dellkvm
+    main: ./cmd/dellkvm
+    binary: dellkvm
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+archives:
+  - id: binaries
+    ids:
+      - dellkvm
+    name_template: "dellkvm_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats:
+      - tar.gz
+    files:
+      - README.md
+      - LICENSE
+      - config.toml.default
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"

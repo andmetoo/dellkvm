@@ -1,0 +1,140 @@
+[UsageDetect]
+other = "Utilisation : dellkvm detect"
+
+[UsageCurrent]
+other = "Utilisation : dellkvm current"
+
+[UsageSwitch]
+other = "Utilisation : dellkvm switch <id>"
+
+[UsageLearn]
+other = "Utilisation : dellkvm learn"
+
+[UsageRoot]
+other = "Utilisation : dellkvm [detect|current|switch <id>|learn]"
+
+[ConfigReadFailed]
+other = "impossible de lire {{.Path}}"
+
+[ConfigNotFound]
+other = "configuration introuvable. Chemins vérifiés : {{.Paths}}\nExécute : dellkvm learn"
+
+[InvalidBus]
+other = "dans config.toml, bus doit valoir 0 pour l'auto-détection ou un nombre positif"
+
+[MissingInputs]
+other = "config.toml doit contenir au moins une entrée"
+
+[InputNotFound]
+other = "l'entrée avec l'id {{.ID}} est introuvable dans config.toml"
+
+[SwitchSentNoVerify]
+other = "Commande de bascule envoyée vers {{.Name}} ({{.ID}}, {{.Code}}) via le bus {{.Bus}}, mais le moniteur ne répond pas encore à la vérification getvcp {{.VCP}} : {{.Error}}"
+
+[SwitchVerifiedCode]
+other = "Basculé vers {{.Name}} ({{.ID}}, {{.Code}}) via le bus {{.Bus}}. Vérification : code actuel {{.CurrentCode}}"
+
+[SwitchVerifiedInput]
+other = "Basculé vers {{.Name}} ({{.ID}}, {{.Code}}) via le bus {{.Bus}}. Vérification : {{.CurrentName}} ({{.CurrentCode}})"
+
+[SwitchVerificationMismatch]
+other = "Commande de bascule envoyée vers {{.Name}} ({{.ID}}, {{.Requested}}) via le bus {{.Bus}}, mais la vérification indique {{.Observed}}."
+
+[AutoDetectedPrefix]
+other = "Bus {{.Bus}} auto-détecté. {{.Message}}"
+
+[VCPCodeNotFound]
+other = "sl=0x.. est introuvable dans la sortie getvcp :\n{{.Raw}}"
+
+[VCPCodeParseFailed]
+other = "impossible d'analyser sl=0x{{.Value}}"
+
+[LearnPrompt]
+other = "Bascule le moniteur vers {{.Name}} via l'OSD puis appuie sur Entrée..."
+
+[LearnCodeReadFailed]
+other = "impossible de lire le code pour {{.ID}}"
+
+[ConfigSaved]
+other = "Configuration enregistrée : {{.Path}}"
+
+[CurrentCode]
+other = "Entrée actuelle : {{.Code}} (bus {{.Bus}})"
+
+[CurrentInput]
+other = "Entrée actuelle : {{.Name}} ({{.ID}}, {{.Code}}, bus {{.Bus}})"
+
+[BusPrompt]
+other = "Bus : "
+
+[InvalidBusPrompt]
+other = "Saisis un numéro de bus positif, par exemple 6."
+
+[MissingDDC]
+other = "ddcutil est introuvable. Installe-le avec : sudo dnf install ddcutil i2c-tools"
+
+[I2CAccess]
+other = "Ajoute ton utilisateur au groupe i2c : sudo usermod -aG i2c $USER, puis reconnecte-toi"
+
+[NoI2CDevices]
+other = "Aucun périphérique I2C trouvé. Charge le module : sudo modprobe i2c-dev. Si cela ne suffit pas, vérifie DDC/CI dans l'OSD du moniteur"
+
+[DDCRetry]
+other = "le moniteur a été trouvé, mais la requête DDC/VCP n'a pas obtenu de réponse stable. Cela ne ressemble pas à un problème sudo. Vérifie DDC/CI dans l'OSD du moniteur, le câble, le dock ou le port ; la bascule peut quand même fonctionner si la lecture de l'entrée actuelle est instable"
+
+[DDCTimeout]
+other = "la commande ddcutil a dépassé le délai de {{.Seconds}}s : ddcutil {{.Command}}"
+
+[DDCTimeoutWithOutput]
+other = "la commande ddcutil a dépassé le délai de {{.Seconds}}s : ddcutil {{.Command}}\n{{.Raw}}"
+
+[DDCCommandFailedNoOutput]
+other = "ddcutil {{.Command}} : {{.Error}}"
+
+[DDCCommandFailedWithOutput]
+other = "ddcutil {{.Command}} : {{.Error}}\n{{.Raw}}"
+
+[AutoDetectFailed]
+other = "échec de l'auto-détection du bus"
+
+[AutoDetectNoDisplays]
+other = "l'auto-détection du bus n'a trouvé aucun écran dans la sortie de ddcutil detect --brief"
+
+[AutoDetectNoResponsive]
+other = "l'auto-détection du bus a vérifié {{.Buses}}, mais aucun bus n'a répondu à getvcp {{.VCP}}"
+
+[NoMonitorUnknownBus]
+other = "moniteur introuvable sur le bus sélectionné. Vérifie les écrans disponibles : dellkvm detect. Corrige ensuite bus dans config.toml ou exécute : dellkvm learn"
+
+[NoMonitorBus]
+other = "moniteur introuvable sur le bus {{.Bus}}. Vérifie les écrans disponibles : dellkvm detect. Corrige ensuite bus dans config.toml ou exécute : dellkvm learn"
+
+[ListTitle]
+other = "Entrées"
+
+[Refreshing]
+other = "Actualisation de l'entrée actuelle..."
+
+[Switching]
+other = "Bascule vers {{.Name}}..."
+
+[ErrorPrefix]
+other = "Erreur : {{.Error}}"
+
+[CurrentRefreshed]
+other = "Entrée actuelle actualisée via le bus {{.Bus}}."
+
+[CurrentCodeNotFound]
+other = "Le code actuel est introuvable dans config.toml."
+
+[TuiCurrentUnknown]
+other = "Entrée actuelle : inconnue"
+
+[TuiCurrentInput]
+other = "Entrée actuelle : {{.Name}} ({{.Code}}, bus {{.Bus}})"
+
+[TuiCurrentCode]
+other = "Entrée actuelle : {{.Code}} (bus {{.Bus}})"
+
+[Keys]
+other = "Enter : basculer  r : actualiser  q/Ctrl+C : quitter"

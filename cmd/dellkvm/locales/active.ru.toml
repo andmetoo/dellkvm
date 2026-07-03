@@ -1,0 +1,140 @@
+[UsageDetect]
+other = "Использование: dellkvm detect"
+
+[UsageCurrent]
+other = "Использование: dellkvm current"
+
+[UsageSwitch]
+other = "Использование: dellkvm switch <id>"
+
+[UsageLearn]
+other = "Использование: dellkvm learn"
+
+[UsageRoot]
+other = "Использование: dellkvm [detect|current|switch <id>|learn]"
+
+[ConfigReadFailed]
+other = "не удалось прочитать {{.Path}}"
+
+[ConfigNotFound]
+other = "конфиг не найден. Проверены пути: {{.Paths}}\nЗапусти: dellkvm learn"
+
+[InvalidBus]
+other = "в config.toml bus должен быть 0 для auto или положительным номером"
+
+[MissingInputs]
+other = "в config.toml должен быть хотя бы один input"
+
+[InputNotFound]
+other = "input с id {{.ID}} не найден в config.toml"
+
+[SwitchSentNoVerify]
+other = "Команда переключения отправлена на {{.Name}} ({{.ID}}, {{.Code}}) через bus {{.Bus}}, но монитор временно не отвечает на проверку getvcp {{.VCP}}: {{.Error}}"
+
+[SwitchVerifiedCode]
+other = "Переключено на {{.Name}} ({{.ID}}, {{.Code}}) через bus {{.Bus}}. Проверка: текущий код {{.CurrentCode}}"
+
+[SwitchVerifiedInput]
+other = "Переключено на {{.Name}} ({{.ID}}, {{.Code}}) через bus {{.Bus}}. Проверка: {{.CurrentName}} ({{.CurrentCode}})"
+
+[SwitchVerificationMismatch]
+other = "Команда переключения отправлена на {{.Name}} ({{.ID}}, {{.Requested}}) через bus {{.Bus}}, но проверка показала {{.Observed}}."
+
+[AutoDetectedPrefix]
+other = "Автоопределен bus {{.Bus}}. {{.Message}}"
+
+[VCPCodeNotFound]
+other = "не найден sl=0x.. в выводе getvcp:\n{{.Raw}}"
+
+[VCPCodeParseFailed]
+other = "не удалось распарсить sl=0x{{.Value}}"
+
+[LearnPrompt]
+other = "Переключи монитор на {{.Name}} через OSD и нажми Enter..."
+
+[LearnCodeReadFailed]
+other = "не удалось прочитать код для {{.ID}}"
+
+[ConfigSaved]
+other = "Конфиг сохранен: {{.Path}}"
+
+[CurrentCode]
+other = "Текущий вход: {{.Code}} (bus {{.Bus}})"
+
+[CurrentInput]
+other = "Текущий вход: {{.Name}} ({{.ID}}, {{.Code}}, bus {{.Bus}})"
+
+[BusPrompt]
+other = "Bus: "
+
+[InvalidBusPrompt]
+other = "Введи положительный номер bus, например 6."
+
+[MissingDDC]
+other = "ddcutil не найден. Установи: sudo dnf install ddcutil i2c-tools"
+
+[I2CAccess]
+other = "Добавь пользователя в группу i2c: sudo usermod -aG i2c $USER, затем перелогинься"
+
+[NoI2CDevices]
+other = "I2C устройства не найдены. Загрузи модуль: sudo modprobe i2c-dev. Если не помогло, проверь DDC/CI в OSD монитора"
+
+[DDCRetry]
+other = "монитор найден, но DDC/VCP-запрос не получил стабильный ответ. Это не похоже на проблему sudo. Проверь DDC/CI в OSD монитора, кабель/док/порт; переключение может сработать даже если чтение текущего входа нестабильно"
+
+[DDCTimeout]
+other = "команда ddcutil превысила таймаут {{.Seconds}}s: ddcutil {{.Command}}"
+
+[DDCTimeoutWithOutput]
+other = "команда ddcutil превысила таймаут {{.Seconds}}s: ddcutil {{.Command}}\n{{.Raw}}"
+
+[DDCCommandFailedNoOutput]
+other = "ddcutil {{.Command}}: {{.Error}}"
+
+[DDCCommandFailedWithOutput]
+other = "ddcutil {{.Command}}: {{.Error}}\n{{.Raw}}"
+
+[AutoDetectFailed]
+other = "автоопределение bus не удалось"
+
+[AutoDetectNoDisplays]
+other = "автоопределение bus не нашло дисплеи в выводе ddcutil detect --brief"
+
+[AutoDetectNoResponsive]
+other = "автоопределение bus проверило {{.Buses}}, но ни один bus не ответил на getvcp {{.VCP}}"
+
+[NoMonitorUnknownBus]
+other = "монитор не найден на указанном bus. Проверь доступные дисплеи: dellkvm detect. Затем исправь bus в config.toml или запусти: dellkvm learn"
+
+[NoMonitorBus]
+other = "монитор не найден на bus {{.Bus}}. Проверь доступные дисплеи: dellkvm detect. Затем исправь bus в config.toml или запусти: dellkvm learn"
+
+[ListTitle]
+other = "Входы"
+
+[Refreshing]
+other = "Обновляю текущий вход..."
+
+[Switching]
+other = "Переключаю на {{.Name}}..."
+
+[ErrorPrefix]
+other = "Ошибка: {{.Error}}"
+
+[CurrentRefreshed]
+other = "Текущий вход обновлен через bus {{.Bus}}."
+
+[CurrentCodeNotFound]
+other = "Текущий код не найден в config.toml."
+
+[TuiCurrentUnknown]
+other = "Текущий вход: неизвестно"
+
+[TuiCurrentInput]
+other = "Текущий вход: {{.Name}} ({{.Code}}, bus {{.Bus}})"
+
+[TuiCurrentCode]
+other = "Текущий вход: {{.Code}} (bus {{.Bus}})"
+
+[Keys]
+other = "Enter: переключить  r: обновить  q/Ctrl+C: выйти"

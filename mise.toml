@@ -1,0 +1,28 @@
+[tools]
+go = "1.26.2"
+goreleaser = "2.16.0"
+golangci-lint = "2.12.2"
+
+[tasks.test]
+description = "Run tests"
+run = "go test ./..."
+
+[tasks.vet]
+description = "Run go vet"
+run = "go vet ./..."
+
+[tasks.lint]
+description = "Run linters/static checks"
+run = "golangci-lint run ./..."
+
+[tasks.build]
+description = "Build dellkvm"
+run = "goreleaser build --snapshot --clean --single-target --output dellkvm"
+
+[tasks."build:all"]
+description = "Build all configured release binaries"
+run = "goreleaser build --snapshot --clean"
+
+[tasks."release:check"]
+description = "Validate GoReleaser config"
+run = "goreleaser check"

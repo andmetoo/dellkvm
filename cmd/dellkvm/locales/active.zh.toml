@@ -1,0 +1,140 @@
+[UsageDetect]
+other = "用法：dellkvm detect"
+
+[UsageCurrent]
+other = "用法：dellkvm current"
+
+[UsageSwitch]
+other = "用法：dellkvm switch <id>"
+
+[UsageLearn]
+other = "用法：dellkvm learn"
+
+[UsageRoot]
+other = "用法：dellkvm [detect|current|switch <id>|learn]"
+
+[ConfigReadFailed]
+other = "无法读取 {{.Path}}"
+
+[ConfigNotFound]
+other = "未找到配置。已检查路径：{{.Paths}}\n运行：dellkvm learn"
+
+[InvalidBus]
+other = "config.toml 中 bus 必须为 0（自动检测）或正数"
+
+[MissingInputs]
+other = "config.toml 必须至少包含一个 input"
+
+[InputNotFound]
+other = "config.toml 中未找到 id 为 {{.ID}} 的 input"
+
+[SwitchSentNoVerify]
+other = "已向 {{.Name}} ({{.ID}}, {{.Code}}) 通过 bus {{.Bus}} 发送切换命令，但显示器暂时未响应 getvcp {{.VCP}} 验证：{{.Error}}"
+
+[SwitchVerifiedCode]
+other = "已切换到 {{.Name}} ({{.ID}}, {{.Code}})，通过 bus {{.Bus}}。验证：当前代码 {{.CurrentCode}}"
+
+[SwitchVerifiedInput]
+other = "已切换到 {{.Name}} ({{.ID}}, {{.Code}})，通过 bus {{.Bus}}。验证：{{.CurrentName}} ({{.CurrentCode}})"
+
+[SwitchVerificationMismatch]
+other = "已向 {{.Name}} ({{.ID}}, {{.Requested}}) 通过 bus {{.Bus}} 发送切换命令，但验证结果为 {{.Observed}}。"
+
+[AutoDetectedPrefix]
+other = "自动检测到 bus {{.Bus}}。{{.Message}}"
+
+[VCPCodeNotFound]
+other = "getvcp 输出中未找到 sl=0x..：\n{{.Raw}}"
+
+[VCPCodeParseFailed]
+other = "无法解析 sl=0x{{.Value}}"
+
+[LearnPrompt]
+other = "请通过 OSD 将显示器切换到 {{.Name}}，然后按 Enter..."
+
+[LearnCodeReadFailed]
+other = "无法读取 {{.ID}} 的代码"
+
+[ConfigSaved]
+other = "配置已保存：{{.Path}}"
+
+[CurrentCode]
+other = "当前输入：{{.Code}} (bus {{.Bus}})"
+
+[CurrentInput]
+other = "当前输入：{{.Name}} ({{.ID}}, {{.Code}}, bus {{.Bus}})"
+
+[BusPrompt]
+other = "Bus: "
+
+[InvalidBusPrompt]
+other = "请输入正数 bus 编号，例如 6。"
+
+[MissingDDC]
+other = "未找到 ddcutil。请安装：sudo dnf install ddcutil i2c-tools"
+
+[I2CAccess]
+other = "将当前用户加入 i2c 组：sudo usermod -aG i2c $USER，然后重新登录"
+
+[NoI2CDevices]
+other = "未找到 I2C 设备。加载模块：sudo modprobe i2c-dev。如果仍然无效，请检查显示器 OSD 中的 DDC/CI"
+
+[DDCRetry]
+other = "已找到显示器，但 DDC/VCP 请求没有获得稳定响应。这看起来不像 sudo 问题。请检查显示器 OSD 中的 DDC/CI、线缆、扩展坞或端口；即使读取当前输入不稳定，切换仍可能可用"
+
+[DDCTimeout]
+other = "ddcutil 命令在 {{.Seconds}}s 后超时：ddcutil {{.Command}}"
+
+[DDCTimeoutWithOutput]
+other = "ddcutil 命令在 {{.Seconds}}s 后超时：ddcutil {{.Command}}\n{{.Raw}}"
+
+[DDCCommandFailedNoOutput]
+other = "ddcutil {{.Command}}：{{.Error}}"
+
+[DDCCommandFailedWithOutput]
+other = "ddcutil {{.Command}}：{{.Error}}\n{{.Raw}}"
+
+[AutoDetectFailed]
+other = "bus 自动检测失败"
+
+[AutoDetectNoDisplays]
+other = "bus 自动检测在 ddcutil detect --brief 输出中未找到显示器"
+
+[AutoDetectNoResponsive]
+other = "bus 自动检测检查了 {{.Buses}}，但没有 bus 响应 getvcp {{.VCP}}"
+
+[NoMonitorUnknownBus]
+other = "在所选 bus 上未找到显示器。查看可用显示器：dellkvm detect。然后修正 config.toml 中的 bus 或运行：dellkvm learn"
+
+[NoMonitorBus]
+other = "在 bus {{.Bus}} 上未找到显示器。查看可用显示器：dellkvm detect。然后修正 config.toml 中的 bus 或运行：dellkvm learn"
+
+[ListTitle]
+other = "输入"
+
+[Refreshing]
+other = "正在刷新当前输入..."
+
+[Switching]
+other = "正在切换到 {{.Name}}..."
+
+[ErrorPrefix]
+other = "错误：{{.Error}}"
+
+[CurrentRefreshed]
+other = "已通过 bus {{.Bus}} 刷新当前输入。"
+
+[CurrentCodeNotFound]
+other = "当前代码未在 config.toml 中找到。"
+
+[TuiCurrentUnknown]
+other = "当前输入：未知"
+
+[TuiCurrentInput]
+other = "当前输入：{{.Name}} ({{.Code}}, bus {{.Bus}})"
+
+[TuiCurrentCode]
+other = "当前输入：{{.Code}} (bus {{.Bus}})"
+
+[Keys]
+other = "Enter：切换  r：刷新  q/Ctrl+C：退出"

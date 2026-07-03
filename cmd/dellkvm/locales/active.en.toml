@@ -1,0 +1,140 @@
+[UsageDetect]
+other = "Usage: dellkvm detect"
+
+[UsageCurrent]
+other = "Usage: dellkvm current"
+
+[UsageSwitch]
+other = "Usage: dellkvm switch <id>"
+
+[UsageLearn]
+other = "Usage: dellkvm learn"
+
+[UsageRoot]
+other = "Usage: dellkvm [detect|current|switch <id>|learn]"
+
+[ConfigReadFailed]
+other = "failed to read {{.Path}}"
+
+[ConfigNotFound]
+other = "config not found. Checked paths: {{.Paths}}\nRun: dellkvm learn"
+
+[InvalidBus]
+other = "config.toml bus must be 0 for auto-detect or a positive number"
+
+[MissingInputs]
+other = "config.toml must contain at least one input"
+
+[InputNotFound]
+other = "input with id {{.ID}} was not found in config.toml"
+
+[SwitchSentNoVerify]
+other = "Switch command sent to {{.Name}} ({{.ID}}, {{.Code}}) through bus {{.Bus}}, but the monitor did not answer the getvcp {{.VCP}} verification yet: {{.Error}}"
+
+[SwitchVerifiedCode]
+other = "Switched to {{.Name}} ({{.ID}}, {{.Code}}) through bus {{.Bus}}. Verification: current code {{.CurrentCode}}"
+
+[SwitchVerifiedInput]
+other = "Switched to {{.Name}} ({{.ID}}, {{.Code}}) through bus {{.Bus}}. Verification: {{.CurrentName}} ({{.CurrentCode}})"
+
+[SwitchVerificationMismatch]
+other = "Switch command sent to {{.Name}} ({{.ID}}, {{.Requested}}) through bus {{.Bus}}, but verification reported {{.Observed}}."
+
+[AutoDetectedPrefix]
+other = "Auto-detected bus {{.Bus}}. {{.Message}}"
+
+[VCPCodeNotFound]
+other = "sl=0x.. was not found in getvcp output:\n{{.Raw}}"
+
+[VCPCodeParseFailed]
+other = "failed to parse sl=0x{{.Value}}"
+
+[LearnPrompt]
+other = "Switch the monitor to {{.Name}} through OSD and press Enter..."
+
+[LearnCodeReadFailed]
+other = "failed to read code for {{.ID}}"
+
+[ConfigSaved]
+other = "Config saved: {{.Path}}"
+
+[CurrentCode]
+other = "Current input: {{.Code}} (bus {{.Bus}})"
+
+[CurrentInput]
+other = "Current input: {{.Name}} ({{.ID}}, {{.Code}}, bus {{.Bus}})"
+
+[BusPrompt]
+other = "Bus: "
+
+[InvalidBusPrompt]
+other = "Enter a positive bus number, for example 6."
+
+[MissingDDC]
+other = "ddcutil not found. Install it with: sudo dnf install ddcutil i2c-tools"
+
+[I2CAccess]
+other = "Add your user to the i2c group: sudo usermod -aG i2c $USER, then log in again"
+
+[NoI2CDevices]
+other = "I2C devices were not found. Load the module: sudo modprobe i2c-dev. If that does not help, check DDC/CI in the monitor OSD"
+
+[DDCRetry]
+other = "monitor was found, but the DDC/VCP request did not get a stable response. This does not look like a sudo problem. Check DDC/CI in the monitor OSD, cable, dock, or port; switching may still work even when reading the current input is unstable"
+
+[DDCTimeout]
+other = "ddcutil command timed out after {{.Seconds}}s: ddcutil {{.Command}}"
+
+[DDCTimeoutWithOutput]
+other = "ddcutil command timed out after {{.Seconds}}s: ddcutil {{.Command}}\n{{.Raw}}"
+
+[DDCCommandFailedNoOutput]
+other = "ddcutil {{.Command}}: {{.Error}}"
+
+[DDCCommandFailedWithOutput]
+other = "ddcutil {{.Command}}: {{.Error}}\n{{.Raw}}"
+
+[AutoDetectFailed]
+other = "bus auto-detection failed"
+
+[AutoDetectNoDisplays]
+other = "bus auto-detection found no displays in ddcutil detect --brief output"
+
+[AutoDetectNoResponsive]
+other = "bus auto-detection checked {{.Buses}}, but no bus answered getvcp {{.VCP}}"
+
+[NoMonitorUnknownBus]
+other = "monitor not found on the selected bus. Check available displays: dellkvm detect. Then fix bus in config.toml or run: dellkvm learn"
+
+[NoMonitorBus]
+other = "monitor not found on bus {{.Bus}}. Check available displays: dellkvm detect. Then fix bus in config.toml or run: dellkvm learn"
+
+[ListTitle]
+other = "Inputs"
+
+[Refreshing]
+other = "Refreshing current input..."
+
+[Switching]
+other = "Switching to {{.Name}}..."
+
+[ErrorPrefix]
+other = "Error: {{.Error}}"
+
+[CurrentRefreshed]
+other = "Current input refreshed through bus {{.Bus}}."
+
+[CurrentCodeNotFound]
+other = "Current code was not found in config.toml."
+
+[TuiCurrentUnknown]
+other = "Current input: unknown"
+
+[TuiCurrentInput]
+other = "Current input: {{.Name}} ({{.Code}}, bus {{.Bus}})"
+
+[TuiCurrentCode]
+other = "Current input: {{.Code}} (bus {{.Bus}})"
+
+[Keys]
+other = "Enter: switch  r: refresh  q/Ctrl+C: quit"
