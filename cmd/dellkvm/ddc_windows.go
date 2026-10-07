@@ -96,10 +96,11 @@ func runPlatformWorker(args []string) (bool, error) {
 		if ok == 0 {
 			return true, winCallError("GetVCPFeatureAndVCPFeatureReply", callErr)
 		}
-		if current > 0xff {
-			return true, fmt.Errorf("monitor %d returned invalid input code %d", bus, current)
+		code, err := windowsInputCode(current)
+		if err != nil {
+			return true, fmt.Errorf("monitor %d: %w", bus, err)
 		}
-		fmt.Printf("VCP code 0x60 (Input Source): sl=0x%02x\n", current)
+		fmt.Printf("VCP code 0x60 (Input Source): sl=0x%02x\n", code)
 		return true, nil
 	case "set":
 		monitor, err := selectPhysicalMonitor(monitors, bus)
@@ -113,6 +114,17 @@ func runPlatformWorker(args []string) (bool, error) {
 		return true, nil
 	}
 	return true, errors.New("unsupported monitor operation")
+}
+
+func windowsInputCode(value uint32) (uint8, error) {
+	if value <= 0xff {
+		return uint8(value), nil
+	}
+	// Some displays return the same one-byte input code in both bytes.
+	if value <= 0xffff && value>>8 == value&0xff {
+		return uint8(value), nil
+	}
+	return 0, fmt.Errorf("invalid input code %d (0x%x)", value, value)
 }
 
 func parseMonitorWorkerArgs(args []string) (string, int, uint8, error) {

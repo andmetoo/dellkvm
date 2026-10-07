@@ -97,6 +97,8 @@ The Windows zip contains `dellkvm-tray.exe` (no console window) and `dellkvm.exe
 
 Windows monitor access uses `EnumDisplayMonitors`, `GetPhysicalMonitorsFromHMONITOR`, and VCP code `0x60` through the Windows monitor configuration API. The API runs in a child process so the tray can end a stalled request. The Windows CI tests cover command parsing and building, but cannot prove that a specific monitor, cable, dock, and graphics driver accept the DDC/CI commands. Verify input switching on the target hardware before relying on it.
 
+When exactly one monitor is detected, switching does not require a successful read of its current input. Some monitors return a duplicated input byte (for example, `0x0f0f` for `0x0f`); `dellkvm` accepts that reply. If a write succeeds but the monitor cannot be read afterward, the result says **sent, unverified**. The actual input codes still depend on the monitor model and must match `config.toml`.
+
 ## Testing
 
 `make test`, `make lint`, `make build-all`, and `make release-check` are the local checks. GitHub Actions runs Go tests on Linux and Windows and cross-builds both operating systems for amd64 and arm64. To run the Linux test job locally with [act](https://nektosact.com/usage/), use `act workflow_dispatch -W .github/workflows/ci.yml -j test --matrix os:ubuntu-latest`. `act` uses Linux containers and does not replace the Windows runner.

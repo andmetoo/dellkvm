@@ -593,20 +593,10 @@ func autoDetectBusForSwitch(l appLocalizer) (int, bool, error) {
 		return 0, false, fmt.Errorf("multiple monitors detected (%s): select a monitor in the tray or set bus in config.toml", formatBuses(buses))
 	}
 
-	for _, bus := range buses {
-		_, err := getCurrentStateOnBus(bus, l)
-		if err == nil || errors.Is(err, errDDCRetry) {
-			return bus, true, nil
-		}
-		if !errors.Is(err, errNoMonitor) {
-			return 0, false, err
-		}
-	}
-
-	return 0, false, errors.New(l.T("AutoDetectNoResponsive", map[string]any{
-		"Buses": formatBuses(buses),
-		"VCP":   vcpInputSource,
-	}))
+	// A monitor may accept a VCP write while returning an unsupported or
+	// malformed current value. Detection identifies the sole target; reading
+	// its current input is not a prerequisite for switching it.
+	return buses[0], true, nil
 }
 
 func autoDetectCurrentState(l appLocalizer) (currentState, error) {
