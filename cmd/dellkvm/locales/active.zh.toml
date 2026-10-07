@@ -8,16 +8,16 @@ other = "用法：dellkvm current"
 other = "用法：dellkvm switch <id>"
 
 [UsageRoot]
-other = "用法：dellkvm [detect|current|switch <id>|help]"
+other = "用法：dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "用法：dellkvm [command]\n\n命令：\n  detect       输出 ddcutil detect --brief\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开 TUI。\n配置：将 config.toml.default 复制到 config.toml 或 ~/.config/dellkvm/config.toml 并编辑它。使用 dellkvm detect 查找 bus，或保留 bus = 0 进行自动检测。"
+other = "用法：dellkvm [command]\n\n命令：\n  init         创建缺失的初始配置\n  tray         打开系统托盘\n  tui          打开终端界面\n  status --json  输出 JSON 状态\n  detect       输出 ddcutil detect --brief\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开系统托盘。使用 dellkvm tui 打开终端界面。\n配置：将 config.toml.default 复制到 config.toml 或 ~/.config/dellkvm/config.toml 并编辑它。使用 dellkvm detect 查找 bus，或保留 bus = 0 进行自动检测。"
 
 [ConfigReadFailed]
 other = "无法读取 {{.Path}}"
 
 [ConfigNotFound]
-other = "未找到配置。已检查路径：{{.Paths}}\n将 config.toml.default 复制到 config.toml 或 ~/.config/dellkvm/config.toml 并编辑它。"
+other = "未找到配置。已检查路径：{{.Paths}}\n将 config.toml.default 复制到 config.toml 或 ~/.config/dellkvm/config.toml 并编辑它。\n运行 dellkvm init 创建初始配置。"
 
 [InvalidBus]
 other = "config.toml 中 bus 必须为 0（自动检测）或正数"

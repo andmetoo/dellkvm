@@ -8,16 +8,16 @@ other = "Использование: dellkvm current"
 other = "Использование: dellkvm switch <id>"
 
 [UsageRoot]
-other = "Использование: dellkvm [detect|current|switch <id>|help]"
+other = "Использование: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Использование: dellkvm [command]\n\nКоманды:\n  detect       вывести ddcutil detect --brief\n  current      показать текущий вход\n  switch <id>  переключить на input из config.toml\n  help         показать эту справку\n\nЗапуск без команды открывает TUI.\nКонфиг: скопируй config.toml.default в config.toml или ~/.config/dellkvm/config.toml и отредактируй. Используй dellkvm detect, чтобы найти bus, или оставь bus = 0 для автоопределения."
+other = "Использование: dellkvm [command]\n\nКоманды:\n  init         создать стартовый конфиг, если его нет\n  tray         открыть приложение в трее\n  tui          открыть терминальный интерфейс\n  status --json  вывести статус в JSON\n  detect       вывести ddcutil detect --brief\n  current      показать текущий вход\n  switch <id>  переключить на input из config.toml\n  help         показать эту справку\n\nЗапуск без команды открывает приложение в трее. dellkvm tui открывает терминальный интерфейс.\nКонфиг: скопируй config.toml.default в config.toml или ~/.config/dellkvm/config.toml и отредактируй. Используй dellkvm detect, чтобы найти bus, или оставь bus = 0 для автоопределения."
 
 [ConfigReadFailed]
 other = "не удалось прочитать {{.Path}}"
 
 [ConfigNotFound]
-other = "конфиг не найден. Проверены пути: {{.Paths}}\nСкопируй config.toml.default в config.toml или ~/.config/dellkvm/config.toml и отредактируй."
+other = "конфиг не найден. Проверены пути: {{.Paths}}\nСкопируй config.toml.default в config.toml или ~/.config/dellkvm/config.toml и отредактируй.\nВыполни dellkvm init, чтобы создать стартовый конфиг."
 
 [InvalidBus]
 other = "в config.toml bus должен быть 0 для auto или положительным номером"

@@ -8,16 +8,16 @@ other = "Usage: dellkvm current"
 other = "Usage: dellkvm switch <id>"
 
 [UsageRoot]
-other = "Usage: dellkvm [detect|current|switch <id>|help]"
+other = "Usage: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Usage: dellkvm [command]\n\nCommands:\n  detect       print ddcutil detect --brief\n  current      show the current input\n  switch <id>  switch to a configured input\n  help         show this help\n\nRun without a command to open the TUI.\nConfig: copy config.toml.default to config.toml or ~/.config/dellkvm/config.toml and edit it. Use dellkvm detect to find a bus, or keep bus = 0 for auto-detect."
+other = "Usage: dellkvm [command]\n\nCommands:\n  init         create a starter config if missing\n  tray         open the system tray\n  tui          open the terminal UI\n  status --json  print desktop status as JSON\n  detect       print ddcutil detect --brief\n  current      show the current input\n  switch <id>  switch to a configured input\n  help         show this help\n\nRun without a command to open the system tray. Use dellkvm tui for the terminal UI.\nConfig: copy config.toml.default to config.toml or ~/.config/dellkvm/config.toml and edit it. Use dellkvm detect to find a bus, or keep bus = 0 for auto-detect."
 
 [ConfigReadFailed]
 other = "failed to read {{.Path}}"
 
 [ConfigNotFound]
-other = "config not found. Checked paths: {{.Paths}}\nCopy config.toml.default to config.toml or ~/.config/dellkvm/config.toml and edit it."
+other = "config not found. Checked paths: {{.Paths}}\nCopy config.toml.default to config.toml or ~/.config/dellkvm/config.toml and edit it.\nRun dellkvm init to create a starter configuration."
 
 [InvalidBus]
 other = "config.toml bus must be 0 for auto-detect or a positive number"

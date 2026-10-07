@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=dellkvm
+Comment=Switch monitor inputs from the system tray
+Exec=dellkvm tray
+Icon=video-display
+Terminal=false
+Categories=Utility;HardwareSettings;
+StartupNotify=false

@@ -608,6 +608,31 @@ func TestHelperProcess(t *testing.T) {
 	case "timeout":
 		time.Sleep(5 * time.Second)
 		os.Exit(0)
+	case "multiple-monitors":
+		if containsArg(args, "detect") {
+			_, _ = os.Stdout.WriteString("Display 1\n I2C bus: /dev/i2c-6\nDisplay 2\n I2C bus: /dev/i2c-13\n")
+			os.Exit(0)
+		}
+		os.Exit(99)
+	case "delayed-verification":
+		path := os.Getenv("DDC_TEST_EVENTS")
+		data, _ := os.ReadFile(path)
+		event := "read\n"
+		if containsArg(args, "setvcp") {
+			event = "write\n"
+		}
+		if err := os.WriteFile(path, append(data, []byte(event)...), 0o600); err != nil {
+			os.Exit(99)
+		}
+		if event == "write\n" {
+			os.Exit(0)
+		}
+		code := "0x11"
+		if strings.Count(string(data), "read\n") >= 1 {
+			code = "0x0f"
+		}
+		_, _ = os.Stdout.WriteString("sl=" + code)
+		os.Exit(0)
 	default:
 		os.Exit(1)
 	}

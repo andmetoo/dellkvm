@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "dellkvm.inputs",
+  "name": "dellkvm",
+  "version": "0.1.0",
+  "author": "dellkvm contributors",
+  "description": "Monitor input switching through the dellkvm CLI",
+  "kinds": ["bar-widget"],
+  "entryPoints": {"barWidget": "Widget.qml"},
+  "barWidget": {
+    "displayName": "Monitor inputs",
+    "category": "Hardware",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {"executable": "dellkvm"},
+    "schema": [{"key": "executable", "type": "string", "label": "dellkvm executable"}]
+  }
+}

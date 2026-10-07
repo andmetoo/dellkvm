@@ -28,6 +28,8 @@ archives:
       - README.md
       - LICENSE
       - config.toml.default
+      - integrations/linux/*
+      - integrations/omarchy/*
 
 checksum:
   name_template: checksums.txt
