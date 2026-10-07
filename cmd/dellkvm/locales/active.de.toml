@@ -8,16 +8,16 @@ other = "Verwendung: dellkvm current"
 other = "Verwendung: dellkvm switch <id>"
 
 [UsageRoot]
-other = "Verwendung: dellkvm [detect|current|switch <id>|help]"
+other = "Verwendung: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  detect       gibt ddcutil detect --brief aus\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird die TUI geöffnet.\nKonfiguration: Kopiere config.toml.default nach config.toml oder ~/.config/dellkvm/config.toml und bearbeite sie. Nutze dellkvm detect, um einen bus zu finden, oder behalte bus = 0 für Auto-Erkennung."
+other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  init         fehlende Startkonfiguration erstellen\n  tray         Infobereich öffnen\n  tui          Terminal-Oberfläche öffnen\n  status --json  Status als JSON ausgeben\n  detect       listet verfügbare Monitore auf\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird das Infobereich-Symbol geöffnet. dellkvm tui öffnet die TUI.\nKonfiguration: Führe dellkvm init aus und bearbeite die angezeigte Datei. dellkvm detect listet Monitore auf; bus = 0 aktiviert die Auto-Erkennung."
 
 [ConfigReadFailed]
 other = "{{.Path}} konnte nicht gelesen werden"
 
 [ConfigNotFound]
-other = "Konfiguration nicht gefunden. Geprüfte Pfade: {{.Paths}}\nKopiere config.toml.default nach config.toml oder ~/.config/dellkvm/config.toml und bearbeite sie."
+other = "Konfiguration nicht gefunden. Geprüfte Pfade: {{.Paths}}\nKopiere config.toml.default nach config.toml oder ~/.config/dellkvm/config.toml und bearbeite sie.\nFühre dellkvm init aus, um eine Startkonfiguration zu erstellen."
 
 [InvalidBus]
 other = "in config.toml muss bus 0 für Auto-Erkennung oder eine positive Nummer sein"

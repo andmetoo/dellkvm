@@ -17,7 +17,7 @@ run = "golangci-lint run ./..."
 
 [tasks.build]
 description = "Build dellkvm"
-run = "goreleaser build --snapshot --clean --single-target --output dellkvm"
+run = "goreleaser build --snapshot --clean --single-target"
 
 [tasks."build:all"]
 description = "Build all configured release binaries"

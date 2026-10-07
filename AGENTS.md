@@ -2,21 +2,21 @@
 
 ## Project Structure & Module Organization
 
-This repository contains `dellkvm`, a Linux-only Go CLI/TUI for switching monitor inputs through `ddcutil`.
+This repository contains `dellkvm`, a Linux and Windows Go tray/CLI/TUI for switching monitor inputs.
 
 - `cmd/dellkvm/main.go` contains the CLI commands, TUI model, config handling, and `ddcutil` integration.
 - `cmd/dellkvm/main_test.go` contains Go unit tests for parsing, config, and command behavior.
 - `config.toml.default` is the copyable default configuration. Local `config.toml` is ignored and takes priority over `~/.config/dellkvm/config.toml`.
 - `mise.toml`, `Makefile`, and `.goreleaser.yaml` define local tooling, developer commands, and release builds.
 
-Do not add direct I2C access. All monitor operations must go through `exec.Command` and `ddcutil`.
+Do not add direct I2C access on Linux. Linux monitor operations go through `exec.Command` and `ddcutil`. Windows uses the system monitor configuration API in a child process so calls have a process timeout.
 
 ## Build, Test, and Development Commands
 
 - `make` shows available targets.
 - `make setup` trusts and installs tools from `mise.toml`.
 - `make build` builds the local `dellkvm` binary through GoReleaser snapshot mode.
-- `make build-all` builds all configured Linux release targets into `dist/`.
+- `make build-all` builds all configured Linux and Windows release targets into `dist/`.
 - `make test` runs `go test ./...`.
 - `make lint` runs the current lint task, currently `go vet ./...`.
 - `make release-check` validates the GoReleaser configuration.

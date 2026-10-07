@@ -1,4 +1,5 @@
-# 0 = auto-detect DDC/I2C bus with ddcutil detect --brief.
+# 0 = auto-detect a single monitor. Positive values select a Linux I2C bus
+# or the Windows monitor index printed by `dellkvm detect`.
 bus = 0
 
 # Supported languages: en, ru, fr, de, zh.
