@@ -67,6 +67,9 @@ func TestWindowsSwitchHelperProcess(t *testing.T) {
 			break
 		}
 	}
+	if len(args) > 0 && args[0] == "--monitor-worker" {
+		args = args[1:]
+	}
 	switch {
 	case len(args) == 2 && args[0] == "detect":
 		_, _ = os.Stdout.WriteString("Display 1\n   Monitor: 1\n")
