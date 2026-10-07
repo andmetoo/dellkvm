@@ -157,7 +157,7 @@ func TestRunHelp(t *testing.T) {
 				"current",
 				"switch <id>",
 				"help",
-				"config.toml.default",
+				"dellkvm init",
 			} {
 				if !strings.Contains(out, want) {
 					t.Fatalf("run(%v) output = %q, want %q", tt.args, out, want)

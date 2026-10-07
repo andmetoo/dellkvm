@@ -11,7 +11,7 @@ other = "Utilisation : dellkvm switch <id>"
 other = "Utilisation : dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Utilisation : dellkvm [commande]\n\nCommandes:\n  init         créer la configuration si absente\n  tray         ouvrir la zone de notification\n  tui          ouvrir l’interface terminal\n  status --json  afficher le statut JSON\n  detect       affiche ddcutil detect --brief\n  current      affiche l'entrée actuelle\n  switch <id>  bascule vers une entrée configurée\n  help         affiche cette aide\n\nLance sans commande pour ouvrir la zone de notification. dellkvm tui ouvre la TUI.\nConfiguration: copie config.toml.default vers config.toml ou ~/.config/dellkvm/config.toml et modifie-le. Utilise dellkvm detect pour trouver un bus, ou garde bus = 0 pour l'auto-détection."
+other = "Utilisation : dellkvm [commande]\n\nCommandes:\n  init         créer la configuration si absente\n  tray         ouvrir la zone de notification\n  tui          ouvrir l’interface terminal\n  status --json  afficher le statut JSON\n  detect       liste les moniteurs disponibles\n  current      affiche l'entrée actuelle\n  switch <id>  bascule vers une entrée configurée\n  help         affiche cette aide\n\nLance sans commande pour ouvrir la zone de notification. dellkvm tui ouvre la TUI.\nConfiguration : lance dellkvm init et modifie le fichier indiqué. Utilise dellkvm detect pour lister les moniteurs, ou garde bus = 0 pour l'auto-détection."
 
 [ConfigReadFailed]
 other = "impossible de lire {{.Path}}"

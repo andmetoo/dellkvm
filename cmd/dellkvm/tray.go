@@ -1,10 +1,11 @@
-//go:build linux
+//go:build linux || windows
 
 package main
 
 import (
 	"bytes"
 	"context"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"image"
@@ -12,6 +13,7 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync/atomic"
 
@@ -333,5 +335,20 @@ func trayIcon() []byte {
 	}
 	var pngData bytes.Buffer
 	_ = png.Encode(&pngData, im)
+	if runtime.GOOS == "windows" {
+		var ico bytes.Buffer
+		for _, value := range []uint16{0, 1, 1} {
+			_ = binary.Write(&ico, binary.LittleEndian, value)
+		}
+		ico.Write([]byte{32, 32, 0, 0})
+		for _, value := range []uint16{1, 32} {
+			_ = binary.Write(&ico, binary.LittleEndian, value)
+		}
+		for _, value := range []uint32{uint32(pngData.Len()), 22} {
+			_ = binary.Write(&ico, binary.LittleEndian, value)
+		}
+		ico.Write(pngData.Bytes())
+		return ico.Bytes()
+	}
 	return pngData.Bytes()
 }

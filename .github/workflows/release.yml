@@ -14,8 +14,12 @@ concurrency:
 
 jobs:
   test:
-    name: Test
-    runs-on: ubuntu-latest
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -28,6 +32,9 @@ jobs:
 
       - name: Run tests
         run: go test ./...
+
+      - name: Run vet
+        run: go vet ./...
 
   lint:
     name: Lint

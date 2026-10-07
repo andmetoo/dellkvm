@@ -7,7 +7,7 @@ MISE ?= mise
 help:
 	@printf "Available targets:\n"
 	@printf "  make setup         Install tools from mise.toml\n"
-	@printf "  make build         Build local dellkvm binary with GoReleaser\n"
+	@printf "  make build         Build local dellkvm binary into dist/\n"
 	@printf "  make build-all     Build all configured GoReleaser targets\n"
 	@printf "  make test          Run tests\n"
 	@printf "  make lint          Run golangci-lint\n"

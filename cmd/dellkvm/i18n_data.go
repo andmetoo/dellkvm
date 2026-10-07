@@ -1,4 +1,4 @@
-//go:build linux
+//go:build linux || windows
 
 package main
 
@@ -17,7 +17,7 @@ other = "Usage: dellkvm switch <id>"
 other = "Usage: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Usage: dellkvm [command]\n\nCommands:\n  init         create a starter config if missing\n  tray         open the system tray\n  tui          open the terminal UI\n  status --json  print desktop status as JSON\n  detect       print ddcutil detect --brief\n  current      show the current input\n  switch <id>  switch to a configured input\n  help         show this help\n\nRun without a command to open the system tray. Use dellkvm tui for the terminal UI.\nConfig: copy config.toml.default to config.toml or ~/.config/dellkvm/config.toml and edit it. Use dellkvm detect to find a bus, or keep bus = 0 for auto-detect."
+other = "Usage: dellkvm [command]\n\nCommands:\n  init         create a starter config if missing\n  tray         open the system tray\n  tui          open the terminal UI\n  status --json  print desktop status as JSON\n  detect       list available monitors\n  current      show the current input\n  switch <id>  switch to a configured input\n  help         show this help\n\nRun without a command to open the system tray. Use dellkvm tui for the terminal UI.\nConfig: run dellkvm init, then edit the printed file. Use dellkvm detect to list monitors, or keep bus = 0 for auto-detect."
 
 [ConfigReadFailed]
 other = "failed to read {{.Path}}"
@@ -143,7 +143,7 @@ other = "Использование: dellkvm switch <id>"
 other = "Использование: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Использование: dellkvm [command]\n\nКоманды:\n  init         создать стартовый конфиг, если его нет\n  tray         открыть приложение в трее\n  tui          открыть терминальный интерфейс\n  status --json  вывести статус в JSON\n  detect       вывести ddcutil detect --brief\n  current      показать текущий вход\n  switch <id>  переключить на input из config.toml\n  help         показать эту справку\n\nЗапуск без команды открывает приложение в трее. dellkvm tui открывает терминальный интерфейс.\nКонфиг: скопируй config.toml.default в config.toml или ~/.config/dellkvm/config.toml и отредактируй. Используй dellkvm detect, чтобы найти bus, или оставь bus = 0 для автоопределения."
+other = "Использование: dellkvm [command]\n\nКоманды:\n  init         создать стартовый конфиг, если его нет\n  tray         открыть приложение в трее\n  tui          открыть терминальный интерфейс\n  status --json  вывести статус в JSON\n  detect       показать доступные мониторы\n  current      показать текущий вход\n  switch <id>  переключить на input из config.toml\n  help         показать эту справку\n\nЗапуск без команды открывает приложение в трее. dellkvm tui открывает терминальный интерфейс.\nКонфиг: выполни dellkvm init и отредактируй созданный файл. Используй dellkvm detect для списка мониторов, или оставь bus = 0 для автоопределения."
 
 [ConfigReadFailed]
 other = "не удалось прочитать {{.Path}}"
@@ -269,7 +269,7 @@ other = "Utilisation : dellkvm switch <id>"
 other = "Utilisation : dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Utilisation : dellkvm [commande]\n\nCommandes:\n  init         créer la configuration si absente\n  tray         ouvrir la zone de notification\n  tui          ouvrir l’interface terminal\n  status --json  afficher le statut JSON\n  detect       affiche ddcutil detect --brief\n  current      affiche l'entrée actuelle\n  switch <id>  bascule vers une entrée configurée\n  help         affiche cette aide\n\nLance sans commande pour ouvrir la zone de notification. dellkvm tui ouvre la TUI.\nConfiguration: copie config.toml.default vers config.toml ou ~/.config/dellkvm/config.toml et modifie-le. Utilise dellkvm detect pour trouver un bus, ou garde bus = 0 pour l'auto-détection."
+other = "Utilisation : dellkvm [commande]\n\nCommandes:\n  init         créer la configuration si absente\n  tray         ouvrir la zone de notification\n  tui          ouvrir l’interface terminal\n  status --json  afficher le statut JSON\n  detect       liste les moniteurs disponibles\n  current      affiche l'entrée actuelle\n  switch <id>  bascule vers une entrée configurée\n  help         affiche cette aide\n\nLance sans commande pour ouvrir la zone de notification. dellkvm tui ouvre la TUI.\nConfiguration : lance dellkvm init et modifie le fichier indiqué. Utilise dellkvm detect pour lister les moniteurs, ou garde bus = 0 pour l'auto-détection."
 
 [ConfigReadFailed]
 other = "impossible de lire {{.Path}}"
@@ -395,7 +395,7 @@ other = "Verwendung: dellkvm switch <id>"
 other = "Verwendung: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  init         fehlende Startkonfiguration erstellen\n  tray         Infobereich öffnen\n  tui          Terminal-Oberfläche öffnen\n  status --json  Status als JSON ausgeben\n  detect       gibt ddcutil detect --brief aus\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird das Infobereich-Symbol geöffnet. dellkvm tui öffnet die TUI.\nKonfiguration: Kopiere config.toml.default nach config.toml oder ~/.config/dellkvm/config.toml und bearbeite sie. Nutze dellkvm detect, um einen bus zu finden, oder behalte bus = 0 für Auto-Erkennung."
+other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  init         fehlende Startkonfiguration erstellen\n  tray         Infobereich öffnen\n  tui          Terminal-Oberfläche öffnen\n  status --json  Status als JSON ausgeben\n  detect       listet verfügbare Monitore auf\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird das Infobereich-Symbol geöffnet. dellkvm tui öffnet die TUI.\nKonfiguration: Führe dellkvm init aus und bearbeite die angezeigte Datei. dellkvm detect listet Monitore auf; bus = 0 aktiviert die Auto-Erkennung."
 
 [ConfigReadFailed]
 other = "{{.Path}} konnte nicht gelesen werden"
@@ -521,7 +521,7 @@ other = "用法：dellkvm switch <id>"
 other = "用法：dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "用法：dellkvm [command]\n\n命令：\n  init         创建缺失的初始配置\n  tray         打开系统托盘\n  tui          打开终端界面\n  status --json  输出 JSON 状态\n  detect       输出 ddcutil detect --brief\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开系统托盘。使用 dellkvm tui 打开终端界面。\n配置：将 config.toml.default 复制到 config.toml 或 ~/.config/dellkvm/config.toml 并编辑它。使用 dellkvm detect 查找 bus，或保留 bus = 0 进行自动检测。"
+other = "用法：dellkvm [command]\n\n命令：\n  init         创建缺失的初始配置\n  tray         打开系统托盘\n  tui          打开终端界面\n  status --json  输出 JSON 状态\n  detect       列出可用显示器\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开系统托盘。使用 dellkvm tui 打开终端界面。\n配置：运行 dellkvm init，然后编辑输出的配置文件。使用 dellkvm detect 查看显示器，或保留 bus = 0 自动检测。"
 
 [ConfigReadFailed]
 other = "无法读取 {{.Path}}"

@@ -16,6 +16,30 @@ builds:
       - arm64
     ldflags:
       - -s -w
+  - id: dellkvm-windows-cli
+    main: ./cmd/dellkvm
+    binary: dellkvm
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+  - id: dellkvm-windows-tray
+    main: ./cmd/dellkvm
+    binary: dellkvm-tray
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -H=windowsgui
 
 archives:
   - id: binaries
@@ -30,6 +54,17 @@ archives:
       - config.toml.default
       - integrations/linux/*
       - integrations/omarchy/*
+  - id: windows
+    ids:
+      - dellkvm-windows-cli
+      - dellkvm-windows-tray
+    name_template: "dellkvm_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats:
+      - zip
+    files:
+      - README.md
+      - LICENSE
+      - config.toml.default
 
 checksum:
   name_template: checksums.txt
