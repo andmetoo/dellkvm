@@ -80,6 +80,13 @@ jobs:
           RELEASE_VERSION: ${{ github.ref_name }}
         run: ./packaging/windows/build.ps1 -Arch '${{ matrix.arch }}' -Version $env:RELEASE_VERSION.Substring(1)
 
+      - name: Smoke test installer and autostart
+        if: matrix.arch == 'amd64'
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
+        run: ./packaging/windows/smoke.ps1 -Version $env:RELEASE_VERSION.Substring(1)
+
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
