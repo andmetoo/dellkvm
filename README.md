@@ -1,5 +1,7 @@
 # dellkvm
 
+<img src="cmd/dellkvm/assets/icon.png" alt="dellkvm icon" width="72">
+
 `dellkvm` is a small way to switch a monitor between connected computers without installing a large Dell management application. It runs from the system tray, a terminal UI, or the command line on Linux and Windows; an optional Omarchy shell widget is included. Linux monitor operations use `ddcutil`; Windows uses the system monitor API in a child process with a timeout. The application never runs `sudo`.
 
 Despite its name, `dellkvm` is not limited to Dell monitors. It sends the standard DDC/CI input-source command (VCP `0x60`), so other monitors that implement this command may work after their input codes are configured. A monitor's built-in KVM may follow the selected video input if its firmware supports that behavior. The app does not control a separate USB or HDMI KVM switch, and monitor/driver compatibility still needs a real hardware check.
@@ -20,7 +22,7 @@ curl -fsSLO https://github.com/andmetoo/dellkvm/releases/latest/download/install
 sh install.sh
 ```
 
-It verifies the release archive against `checksums.txt`, installs to `~/.local/bin`, adds an application launcher, and enables tray autostart for the next login in `~/.config/autostart`. It does not use `sudo` or change your monitor config. Run `~/.local/bin/dellkvm tray` to start it now. Use `sh install.sh --no-autostart` to disable autostart, `--version vX.Y.Z` to install a specific release, or `--uninstall` to remove the managed files while keeping your config. Install `ddcutil` and grant access to `/dev/i2c-*` through your distribution's normal setup. Portable Windows ZIPs and Linux tarballs remain available on the release page.
+It verifies the release archive against `checksums.txt`, installs to `~/.local/bin`, adds an application launcher and icon, and enables tray autostart for the next login in `~/.config/autostart`. It does not use `sudo` or change your monitor config. Run `~/.local/bin/dellkvm tray` to start it now. Use `sh install.sh --no-autostart` to disable autostart, `--version vX.Y.Z` to install a specific release, or `--uninstall` to remove the managed files while keeping your config. Install `ddcutil` and grant access to `/dev/i2c-*` through your distribution's normal setup. Portable Windows ZIPs and Linux tarballs remain available on the release page.
 
 ## Build
 
@@ -37,6 +39,8 @@ make test
 make lint
 make build-all
 ```
+
+The icon source is `cmd/dellkvm/assets/icon.svg`. To regenerate the tray images and Windows executable resources, run `sh scripts/generate-icons.sh` with `rsvg-convert`, Python 3, `llvm-rc`, and `llvm-cvtres` installed. Generated files are committed so normal builds need none of these tools.
 
 ## Configuration
 
@@ -110,7 +114,7 @@ Avoid controlling the same monitor simultaneously from separate tray, CLI, or pl
 
 ## Windows
 
-The Windows installer and portable ZIP contain `dellkvm-tray.exe` (no console window) and `dellkvm.exe` (CLI and optional TUI). Run the tray executable and choose a monitor when multiple are listed. If its input codes differ from the built-in defaults, use **Edit configuration…** to create a config and set the correct codes. `dellkvm.exe detect` shows numbered monitors. Both executables use the same optional configuration file.
+The Windows installer and portable ZIP contain `dellkvm-tray.exe` (no console window) and `dellkvm.exe` (CLI and optional TUI), both with an embedded application icon. The installer, Start Menu shortcut, and tray use the same icon. Run the tray executable and choose a monitor when multiple are listed. If its input codes differ from the built-in defaults, use **Edit configuration…** to create a config and set the correct codes. `dellkvm.exe detect` shows numbered monitors. Both executables use the same optional configuration file.
 
 Windows monitor access uses `EnumDisplayMonitors`, `GetPhysicalMonitorsFromHMONITOR`, and VCP code `0x60` through the Windows monitor configuration API. The API runs in a child process so the tray can end a stalled request. The Windows CI tests cover command parsing and building, but cannot prove that a specific monitor, cable, dock, and graphics driver accept the DDC/CI commands. Verify input switching on the target hardware before relying on it.
 
@@ -122,7 +126,7 @@ When exactly one monitor is detected, switching does not require a successful re
 
 ## Linux launcher and autostart
 
-The Linux install script sets up the launcher and XDG autostart entry. For a manual build, put the binary on `PATH` and use `integrations/linux/dellkvm.desktop` as a launcher or autostart entry. On Hyprland, an alternative is an `exec-once` entry launching `dellkvm tray`; use only one startup mechanism.
+The Linux install script sets up the launcher, XDG autostart entry, and an icon at `~/.local/share/icons/hicolor/256x256/apps/dellkvm.png` (or under `$XDG_DATA_HOME`). For a manual build, put the binary on `PATH`, install `cmd/dellkvm/assets/icon.png` at that icon path, and use `integrations/linux/dellkvm.desktop` as a launcher or autostart entry. On Hyprland, an alternative is an `exec-once` entry launching `dellkvm tray`; use only one startup mechanism.
 
 ## Omarchy shell widget
 

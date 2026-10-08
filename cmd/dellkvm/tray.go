@@ -3,14 +3,10 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/binary"
+	_ "embed"
 	"errors"
 	"fmt"
-	"image"
-	"image/color"
-	"image/png"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -428,39 +424,15 @@ func (a *trayApp) openLog() {
 	}
 }
 
-// Draw a small monitor icon without shipping an external asset dependency.
+//go:embed assets/icon-32.png
+var trayIconPNG []byte
+
+//go:embed assets/icon.ico
+var trayIconICO []byte
+
 func trayIcon() []byte {
-	im := image.NewNRGBA(image.Rect(0, 0, 32, 32))
-	for y := 5; y < 24; y++ {
-		for x := 2; x < 30; x++ {
-			c := color.NRGBA{R: 90, G: 190, B: 240, A: 255}
-			if x > 4 && x < 27 && y > 7 && y < 20 {
-				c = color.NRGBA{R: 24, G: 35, B: 48, A: 255}
-			}
-			im.SetNRGBA(x, y, c)
-		}
-	}
-	for y := 24; y < 28; y++ {
-		for x := 12; x < 20; x++ {
-			im.SetNRGBA(x, y, color.NRGBA{R: 90, G: 190, B: 240, A: 255})
-		}
-	}
-	var pngData bytes.Buffer
-	_ = png.Encode(&pngData, im)
 	if runtime.GOOS == "windows" {
-		var ico bytes.Buffer
-		for _, value := range []uint16{0, 1, 1} {
-			_ = binary.Write(&ico, binary.LittleEndian, value)
-		}
-		ico.Write([]byte{32, 32, 0, 0})
-		for _, value := range []uint16{1, 32} {
-			_ = binary.Write(&ico, binary.LittleEndian, value)
-		}
-		for _, value := range []uint32{uint32(pngData.Len()), 22} {
-			_ = binary.Write(&ico, binary.LittleEndian, value)
-		}
-		ico.Write(pngData.Bytes())
-		return ico.Bytes()
+		return trayIconICO
 	}
-	return pngData.Bytes()
+	return trayIconPNG
 }

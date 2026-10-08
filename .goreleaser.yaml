@@ -52,6 +52,7 @@ archives:
       - README.md
       - LICENSE
       - config.toml.default
+      - cmd/dellkvm/assets/icon.png
       - integrations/linux/*
       - integrations/omarchy/*
   - id: windows

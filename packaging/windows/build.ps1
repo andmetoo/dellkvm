@@ -34,7 +34,8 @@ try {
     }
     if (-not $iscc) { throw 'Inno Setup ISCC.exe was not found' }
 
-    & $iscc "/DAppVersion=$Version" "/DArch=$Arch" "/DBuildDir=$stage" "/O$output" 'packaging/windows/dellkvm.iss'
+    $iconFile = Join-Path $projectRoot 'cmd/dellkvm/assets/icon.ico'
+    & $iscc "/DAppVersion=$Version" "/DArch=$Arch" "/DBuildDir=$stage" "/DIconFile=$iconFile" "/O$output" 'packaging/windows/dellkvm.iss'
     if ($LASTEXITCODE -ne 0) { throw 'Compiling Windows installer failed' }
 } finally {
     Pop-Location

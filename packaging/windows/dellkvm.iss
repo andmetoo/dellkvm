@@ -7,6 +7,9 @@
 #ifndef BuildDir
   #define BuildDir "dist\installer-stage\amd64"
 #endif
+#ifndef IconFile
+  #define IconFile "..\..\cmd\dellkvm\assets\icon.ico"
+#endif
 
 #if Arch == "arm64"
   #define AllowedArch "arm64"
@@ -21,6 +24,7 @@ AppVersion={#AppVersion}
 AppPublisher=andmetoo
 AppPublisherURL=https://github.com/andmetoo/dellkvm
 AppSupportURL=https://github.com/andmetoo/dellkvm/issues
+SetupIconFile={#IconFile}
 DefaultDirName={localappdata}\Programs\dellkvm
 DefaultGroupName=dellkvm
 DisableProgramGroupPage=yes
