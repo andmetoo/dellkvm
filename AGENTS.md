@@ -4,10 +4,10 @@
 
 This repository contains `dellkvm`, a Linux and Windows Go tray/CLI/TUI for switching monitor inputs.
 
-- `cmd/dellkvm/main.go` contains the CLI commands, TUI model, config handling, and `ddcutil` integration.
-- `cmd/dellkvm/main_test.go` contains Go unit tests for parsing, config, and command behavior.
+- `cmd/dellkvm/main.go` contains CLI and config handling; `tui.go`, `tray.go`, and the platform `ddc_*.go` files contain the UIs and monitor backends.
+- `cmd/dellkvm/*_test.go` contains Go tests for parsing, config, command behavior, and monitor requests.
 - `config.toml.default` is the copyable default configuration. Local `config.toml` is ignored and takes priority over `~/.config/dellkvm/config.toml`.
-- `mise.toml`, `Makefile`, and `.goreleaser.yaml` define local tooling, developer commands, and release builds.
+- `install.sh` installs Linux releases per user; `packaging/windows/` builds the Inno Setup installer. `mise.toml`, `Makefile`, `.goreleaser.yaml`, and `.github/workflows/` define tooling and release builds.
 
 Do not add direct I2C access on Linux. Linux monitor operations go through `exec.Command` and `ddcutil`. Windows uses the system monitor configuration API in a child process so calls have a process timeout.
 
@@ -18,8 +18,9 @@ Do not add direct I2C access on Linux. Linux monitor operations go through `exec
 - `make build` builds the local `dellkvm` binary through GoReleaser snapshot mode.
 - `make build-all` builds all configured Linux and Windows release targets into `dist/`.
 - `make test` runs `go test ./...`.
-- `make lint` runs the current lint task, currently `go vet ./...`.
+- `make lint` runs `golangci-lint run ./...`.
 - `make release-check` validates the GoReleaser configuration.
+- `sh tests/install_test.sh` tests the Linux installer with a local release fixture.
 
 If the Go build cache is not writable in a sandbox, run tests with `GOCACHE=/tmp/dellkvm-go-build-cache make test`.
 
