@@ -50,18 +50,69 @@ func TestBusyTUIDoesNotStartAnotherOperation(t *testing.T) {
 	}
 }
 
-func TestFailedRefreshClearsStaleInput(t *testing.T) {
+func TestFailedRefreshRetainsLastInputAsUnverified(t *testing.T) {
 	m := newTUIModel(Config{Inputs: defaultInputs()})
 	m.currentCode, m.currentName, m.currentBus = "0x0f", "DisplayPort", 13
+	m.verified = true
+	m.list.SetItems(itemsFromConfig(m.cfg, m.currentCode))
 	updated, _ := m.updateCurrent(currentMsg{err: errors.New("disconnected")})
 	got := updated.(tuiModel)
-	if got.currentCode != "" || got.currentName != "" || got.currentBus != 0 {
-		t.Fatal("stale current input retained")
+	if got.currentCode != "0x0f" || got.currentName != "DisplayPort" || got.currentBus != 13 || got.verified {
+		t.Fatalf("last selection lost or incorrectly verified: %+v", got)
 	}
+	if !strings.Contains(got.renderCurrent(), "unverified") {
+		t.Fatalf("uncertainty hidden: %q", got.renderCurrent())
+	}
+	found := false
 	for _, item := range got.list.Items() {
 		if item.(inputItem).current {
-			t.Fatal("stale checkmark retained")
+			found = true
 		}
+	}
+	if !found {
+		t.Fatal("last selected input was unmarked")
+	}
+}
+
+func TestTUISwitchKeepsSelectionUntilNextRead(t *testing.T) {
+	m := newTUIModel(Config{Bus: 13, Inputs: defaultInputs()})
+	updated, _ := m.updateSwitch(switchMsg{result: switchResult{Code: "0x0f", Bus: 13, Message: "sent"}})
+	m = updated.(tuiModel)
+	if m.currentCode != "0x0f" || m.verified || !strings.Contains(m.renderCurrent(), "unverified") {
+		t.Fatalf("switch state = %+v", m)
+	}
+	updated, _ = m.updateCurrent(currentMsg{state: currentState{Code: "0x11", Bus: 13}})
+	m = updated.(tuiModel)
+	if m.currentCode != "0x11" || !m.verified {
+		t.Fatalf("read did not correct selection: %+v", m)
+	}
+}
+
+func TestTUIPeriodicRefreshSkipsBusyMonitor(t *testing.T) {
+	m := newTUIModel(Config{Bus: 13, Inputs: defaultInputs()})
+	updated, cmd := m.Update(pollTickMsg{})
+	if !updated.(tuiModel).busy || cmd == nil {
+		t.Fatal("busy TUI did not schedule next poll")
+	}
+	m.busy = false
+	updated, cmd = m.Update(pollTickMsg{})
+	if !updated.(tuiModel).busy || cmd == nil {
+		t.Fatal("idle TUI did not schedule a refresh")
+	}
+}
+
+func TestTraySelectionTracksVerificationAndBus(t *testing.T) {
+	selection := inputSelection{}.onSwitch(switchResult{Code: "0x0f", Bus: 13})
+	selection = selection.onRead(currentState{}, errors.New("disconnected"))
+	if selection.code != "0x0f" || selection.bus != 13 || selection.verified {
+		t.Fatalf("unverified selection lost: %+v", selection)
+	}
+	selection = selection.onRead(currentState{Code: "0x11", Bus: 13}, nil)
+	if selection.code != "0x11" || !selection.verified {
+		t.Fatalf("read did not correct selection: %+v", selection)
+	}
+	if got := selection.forBus(6); got.code != "" {
+		t.Fatalf("selection leaked to another monitor: %+v", got)
 	}
 }
 
@@ -100,9 +151,12 @@ func TestSwitchWaitsForMonitorWithoutRepeatingWrite(t *testing.T) {
 	withoutSwitchDelay(t)
 	path := filepath.Join(t.TempDir(), "events")
 	t.Setenv("DDC_TEST_EVENTS", path)
-	_, err := switchInput(Config{Bus: 6, Inputs: defaultInputs()}, "dp")
+	result, err := switchInputDetailed(Config{Bus: 6, Inputs: defaultInputs()}, "dp")
 	if err != nil {
 		t.Fatal(err)
+	}
+	if !result.Verified || result.Bus != 6 || result.Code != "0x0f" {
+		t.Fatalf("verified switch state = %+v", result)
 	}
 	data, err := os.ReadFile(path)
 	if err != nil {

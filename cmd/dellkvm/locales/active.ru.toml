@@ -11,7 +11,7 @@ other = "Использование: dellkvm switch <id>"
 other = "Использование: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Использование: dellkvm [command]\n\nКоманды:\n  init         создать стартовый конфиг, если его нет\n  tray         открыть приложение в трее\n  tui          открыть терминальный интерфейс\n  status --json  вывести статус в JSON\n  detect       показать доступные мониторы\n  current      показать текущий вход\n  switch <id>  переключить на input из config.toml\n  help         показать эту справку\n\nЗапуск без команды открывает приложение в трее. dellkvm tui открывает терминальный интерфейс.\nКонфиг: выполни dellkvm init и отредактируй созданный файл. Используй dellkvm detect для списка мониторов, или оставь bus = 0 для автоопределения."
+other = "Использование: dellkvm [command]\n\nКоманды:\n  init         создать стартовый конфиг, если его нет\n  tray         открыть приложение в трее\n  tui          открыть терминальный интерфейс\n  status --json  вывести статус в JSON\n  detect       показать доступные мониторы\n  current      показать текущий вход\n  switch <id>  переключить на input из config.toml\n  help         показать эту справку\n\nЗапуск без команды открывает приложение в трее. dellkvm tui открывает терминальный интерфейс.\nКонфиг необязателен; выполни dellkvm init, чтобы настроить входы. Используй dellkvm detect для списка мониторов, или оставь bus = 0 для автоопределения."
 
 [ConfigReadFailed]
 other = "не удалось прочитать {{.Path}}"
@@ -26,7 +26,7 @@ other = "в config.toml bus должен быть 0 для auto или поло�
 other = "в config.toml должен быть хотя бы один input"
 
 [InputNotFound]
-other = "input с id {{.ID}} не найден в config.toml"
+other = "input с id {{.ID}} не найден"
 
 [SwitchSentNoVerify]
 other = "Команда переключения отправлена на {{.Name}} ({{.ID}}, {{.Code}}) через bus {{.Bus}}, но монитор временно не отвечает на проверку getvcp {{.VCP}}: {{.Error}}"
@@ -110,7 +110,10 @@ other = "Ошибка: {{.Error}}"
 other = "Текущий вход обновлен через bus {{.Bus}}."
 
 [CurrentCodeNotFound]
-other = "Текущий код не найден в config.toml."
+other = "Текущий код отсутствует в списке входов."
+
+[TuiLastSelected]
+other = "Последний выбранный вход: {{.Name}} (bus {{.Bus}}, не подтверждено)"
 
 [TuiCurrentUnknown]
 other = "Текущий вход: неизвестно"

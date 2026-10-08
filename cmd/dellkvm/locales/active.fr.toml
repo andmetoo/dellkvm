@@ -11,7 +11,7 @@ other = "Utilisation : dellkvm switch <id>"
 other = "Utilisation : dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Utilisation : dellkvm [commande]\n\nCommandes:\n  init         créer la configuration si absente\n  tray         ouvrir la zone de notification\n  tui          ouvrir l’interface terminal\n  status --json  afficher le statut JSON\n  detect       liste les moniteurs disponibles\n  current      affiche l'entrée actuelle\n  switch <id>  bascule vers une entrée configurée\n  help         affiche cette aide\n\nLance sans commande pour ouvrir la zone de notification. dellkvm tui ouvre la TUI.\nConfiguration : lance dellkvm init et modifie le fichier indiqué. Utilise dellkvm detect pour lister les moniteurs, ou garde bus = 0 pour l'auto-détection."
+other = "Utilisation : dellkvm [commande]\n\nCommandes:\n  init         créer la configuration si absente\n  tray         ouvrir la zone de notification\n  tui          ouvrir l’interface terminal\n  status --json  afficher le statut JSON\n  detect       liste les moniteurs disponibles\n  current      affiche l'entrée actuelle\n  switch <id>  bascule vers une entrée configurée\n  help         affiche cette aide\n\nLance sans commande pour ouvrir la zone de notification. dellkvm tui ouvre la TUI.\nLa configuration est facultative ; lance dellkvm init pour personnaliser les entrées. Utilise dellkvm detect pour lister les moniteurs, ou garde bus = 0 pour l'auto-détection."
 
 [ConfigReadFailed]
 other = "impossible de lire {{.Path}}"
@@ -26,7 +26,7 @@ other = "dans config.toml, bus doit valoir 0 pour l'auto-détection ou un nombre
 other = "config.toml doit contenir au moins une entrée"
 
 [InputNotFound]
-other = "l'entrée avec l'id {{.ID}} est introuvable dans config.toml"
+other = "l'entrée avec l'id {{.ID}} est introuvable"
 
 [SwitchSentNoVerify]
 other = "Commande de bascule envoyée vers {{.Name}} ({{.ID}}, {{.Code}}) via le bus {{.Bus}}, mais le moniteur ne répond pas encore à la vérification getvcp {{.VCP}} : {{.Error}}"
@@ -110,7 +110,10 @@ other = "Erreur : {{.Error}}"
 other = "Entrée actuelle actualisée via le bus {{.Bus}}."
 
 [CurrentCodeNotFound]
-other = "Le code actuel est introuvable dans config.toml."
+other = "Le code actuel ne figure pas dans la liste des entrées."
+
+[TuiLastSelected]
+other = "Dernière entrée choisie : {{.Name}} (bus {{.Bus}}, non vérifiée)"
 
 [TuiCurrentUnknown]
 other = "Entrée actuelle : inconnue"

@@ -17,7 +17,7 @@ other = "Usage: dellkvm switch <id>"
 other = "Usage: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Usage: dellkvm [command]\n\nCommands:\n  init         create a starter config if missing\n  tray         open the system tray\n  tui          open the terminal UI\n  status --json  print desktop status as JSON\n  detect       list available monitors\n  current      show the current input\n  switch <id>  switch to a configured input\n  help         show this help\n\nRun without a command to open the system tray. Use dellkvm tui for the terminal UI.\nConfig: run dellkvm init, then edit the printed file. Use dellkvm detect to list monitors, or keep bus = 0 for auto-detect."
+other = "Usage: dellkvm [command]\n\nCommands:\n  init         create a starter config if missing\n  tray         open the system tray\n  tui          open the terminal UI\n  status --json  print desktop status as JSON\n  detect       list available monitors\n  current      show the current input\n  switch <id>  switch to a configured input\n  help         show this help\n\nRun without a command to open the system tray. Use dellkvm tui for the terminal UI.\nConfig is optional; run dellkvm init to customize inputs. Use dellkvm detect to list monitors, or keep bus = 0 for auto-detect."
 
 [ConfigReadFailed]
 other = "failed to read {{.Path}}"
@@ -32,7 +32,7 @@ other = "config.toml bus must be 0 for auto-detect or a positive number"
 other = "config.toml must contain at least one input"
 
 [InputNotFound]
-other = "input with id {{.ID}} was not found in config.toml"
+other = "input with id {{.ID}} was not found"
 
 [SwitchSentNoVerify]
 other = "Switch command sent to {{.Name}} ({{.ID}}, {{.Code}}) through bus {{.Bus}}, but the monitor did not answer the getvcp {{.VCP}} verification yet: {{.Error}}"
@@ -116,7 +116,10 @@ other = "Error: {{.Error}}"
 other = "Current input refreshed through bus {{.Bus}}."
 
 [CurrentCodeNotFound]
-other = "Current code was not found in config.toml."
+other = "Current code is not in the input list."
+
+[TuiLastSelected]
+other = "Last selected: {{.Name}} (bus {{.Bus}}, unverified)"
 
 [TuiCurrentUnknown]
 other = "Current input: unknown"
@@ -143,7 +146,7 @@ other = "Использование: dellkvm switch <id>"
 other = "Использование: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Использование: dellkvm [command]\n\nКоманды:\n  init         создать стартовый конфиг, если его нет\n  tray         открыть приложение в трее\n  tui          открыть терминальный интерфейс\n  status --json  вывести статус в JSON\n  detect       показать доступные мониторы\n  current      показать текущий вход\n  switch <id>  переключить на input из config.toml\n  help         показать эту справку\n\nЗапуск без команды открывает приложение в трее. dellkvm tui открывает терминальный интерфейс.\nКонфиг: выполни dellkvm init и отредактируй созданный файл. Используй dellkvm detect для списка мониторов, или оставь bus = 0 для автоопределения."
+other = "Использование: dellkvm [command]\n\nКоманды:\n  init         создать стартовый конфиг, если его нет\n  tray         открыть приложение в трее\n  tui          открыть терминальный интерфейс\n  status --json  вывести статус в JSON\n  detect       показать доступные мониторы\n  current      показать текущий вход\n  switch <id>  переключить на input из config.toml\n  help         показать эту справку\n\nЗапуск без команды открывает приложение в трее. dellkvm tui открывает терминальный интерфейс.\nКонфиг необязателен; выполни dellkvm init, чтобы настроить входы. Используй dellkvm detect для списка мониторов, или оставь bus = 0 для автоопределения."
 
 [ConfigReadFailed]
 other = "не удалось прочитать {{.Path}}"
@@ -158,7 +161,7 @@ other = "в config.toml bus должен быть 0 для auto или поло�
 other = "в config.toml должен быть хотя бы один input"
 
 [InputNotFound]
-other = "input с id {{.ID}} не найден в config.toml"
+other = "input с id {{.ID}} не найден"
 
 [SwitchSentNoVerify]
 other = "Команда переключения отправлена на {{.Name}} ({{.ID}}, {{.Code}}) через bus {{.Bus}}, но монитор временно не отвечает на проверку getvcp {{.VCP}}: {{.Error}}"
@@ -242,7 +245,10 @@ other = "Ошибка: {{.Error}}"
 other = "Текущий вход обновлен через bus {{.Bus}}."
 
 [CurrentCodeNotFound]
-other = "Текущий код не найден в config.toml."
+other = "Текущий код отсутствует в списке входов."
+
+[TuiLastSelected]
+other = "Последний выбранный вход: {{.Name}} (bus {{.Bus}}, не подтверждено)"
 
 [TuiCurrentUnknown]
 other = "Текущий вход: неизвестно"
@@ -269,7 +275,7 @@ other = "Utilisation : dellkvm switch <id>"
 other = "Utilisation : dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Utilisation : dellkvm [commande]\n\nCommandes:\n  init         créer la configuration si absente\n  tray         ouvrir la zone de notification\n  tui          ouvrir l’interface terminal\n  status --json  afficher le statut JSON\n  detect       liste les moniteurs disponibles\n  current      affiche l'entrée actuelle\n  switch <id>  bascule vers une entrée configurée\n  help         affiche cette aide\n\nLance sans commande pour ouvrir la zone de notification. dellkvm tui ouvre la TUI.\nConfiguration : lance dellkvm init et modifie le fichier indiqué. Utilise dellkvm detect pour lister les moniteurs, ou garde bus = 0 pour l'auto-détection."
+other = "Utilisation : dellkvm [commande]\n\nCommandes:\n  init         créer la configuration si absente\n  tray         ouvrir la zone de notification\n  tui          ouvrir l’interface terminal\n  status --json  afficher le statut JSON\n  detect       liste les moniteurs disponibles\n  current      affiche l'entrée actuelle\n  switch <id>  bascule vers une entrée configurée\n  help         affiche cette aide\n\nLance sans commande pour ouvrir la zone de notification. dellkvm tui ouvre la TUI.\nLa configuration est facultative ; lance dellkvm init pour personnaliser les entrées. Utilise dellkvm detect pour lister les moniteurs, ou garde bus = 0 pour l'auto-détection."
 
 [ConfigReadFailed]
 other = "impossible de lire {{.Path}}"
@@ -284,7 +290,7 @@ other = "dans config.toml, bus doit valoir 0 pour l'auto-détection ou un nombre
 other = "config.toml doit contenir au moins une entrée"
 
 [InputNotFound]
-other = "l'entrée avec l'id {{.ID}} est introuvable dans config.toml"
+other = "l'entrée avec l'id {{.ID}} est introuvable"
 
 [SwitchSentNoVerify]
 other = "Commande de bascule envoyée vers {{.Name}} ({{.ID}}, {{.Code}}) via le bus {{.Bus}}, mais le moniteur ne répond pas encore à la vérification getvcp {{.VCP}} : {{.Error}}"
@@ -368,7 +374,10 @@ other = "Erreur : {{.Error}}"
 other = "Entrée actuelle actualisée via le bus {{.Bus}}."
 
 [CurrentCodeNotFound]
-other = "Le code actuel est introuvable dans config.toml."
+other = "Le code actuel ne figure pas dans la liste des entrées."
+
+[TuiLastSelected]
+other = "Dernière entrée choisie : {{.Name}} (bus {{.Bus}}, non vérifiée)"
 
 [TuiCurrentUnknown]
 other = "Entrée actuelle : inconnue"
@@ -395,7 +404,7 @@ other = "Verwendung: dellkvm switch <id>"
 other = "Verwendung: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  init         fehlende Startkonfiguration erstellen\n  tray         Infobereich öffnen\n  tui          Terminal-Oberfläche öffnen\n  status --json  Status als JSON ausgeben\n  detect       listet verfügbare Monitore auf\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird das Infobereich-Symbol geöffnet. dellkvm tui öffnet die TUI.\nKonfiguration: Führe dellkvm init aus und bearbeite die angezeigte Datei. dellkvm detect listet Monitore auf; bus = 0 aktiviert die Auto-Erkennung."
+other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  init         fehlende Startkonfiguration erstellen\n  tray         Infobereich öffnen\n  tui          Terminal-Oberfläche öffnen\n  status --json  Status als JSON ausgeben\n  detect       listet verfügbare Monitore auf\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird das Infobereich-Symbol geöffnet. dellkvm tui öffnet die TUI.\nDie Konfiguration ist optional; mit dellkvm init kannst du Eingänge anpassen. dellkvm detect listet Monitore auf; bus = 0 aktiviert die Auto-Erkennung."
 
 [ConfigReadFailed]
 other = "{{.Path}} konnte nicht gelesen werden"
@@ -410,7 +419,7 @@ other = "in config.toml muss bus 0 für Auto-Erkennung oder eine positive Nummer
 other = "config.toml muss mindestens einen input enthalten"
 
 [InputNotFound]
-other = "input mit id {{.ID}} wurde in config.toml nicht gefunden"
+other = "input mit id {{.ID}} wurde nicht gefunden"
 
 [SwitchSentNoVerify]
 other = "Umschaltbefehl an {{.Name}} ({{.ID}}, {{.Code}}) über bus {{.Bus}} gesendet, aber der Monitor antwortet noch nicht auf die getvcp-{{.VCP}}-Prüfung: {{.Error}}"
@@ -494,7 +503,10 @@ other = "Fehler: {{.Error}}"
 other = "Aktueller Eingang über bus {{.Bus}} aktualisiert."
 
 [CurrentCodeNotFound]
-other = "Aktueller Code wurde in config.toml nicht gefunden."
+other = "Der aktuelle Code steht nicht in der Eingangsliste."
+
+[TuiLastSelected]
+other = "Zuletzt gewählt: {{.Name}} (Bus {{.Bus}}, nicht bestätigt)"
 
 [TuiCurrentUnknown]
 other = "Aktueller Eingang: unbekannt"
@@ -521,7 +533,7 @@ other = "用法：dellkvm switch <id>"
 other = "用法：dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "用法：dellkvm [command]\n\n命令：\n  init         创建缺失的初始配置\n  tray         打开系统托盘\n  tui          打开终端界面\n  status --json  输出 JSON 状态\n  detect       列出可用显示器\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开系统托盘。使用 dellkvm tui 打开终端界面。\n配置：运行 dellkvm init，然后编辑输出的配置文件。使用 dellkvm detect 查看显示器，或保留 bus = 0 自动检测。"
+other = "用法：dellkvm [command]\n\n命令：\n  init         创建缺失的初始配置\n  tray         打开系统托盘\n  tui          打开终端界面\n  status --json  输出 JSON 状态\n  detect       列出可用显示器\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开系统托盘。使用 dellkvm tui 打开终端界面。\n配置可选；运行 dellkvm init 可自定义输入。使用 dellkvm detect 查看显示器，或保留 bus = 0 自动检测。"
 
 [ConfigReadFailed]
 other = "无法读取 {{.Path}}"
@@ -536,7 +548,7 @@ other = "config.toml 中 bus 必须为 0（自动检测）或正数"
 other = "config.toml 必须至少包含一个 input"
 
 [InputNotFound]
-other = "config.toml 中未找到 id 为 {{.ID}} 的 input"
+other = "未找到 id 为 {{.ID}} 的 input"
 
 [SwitchSentNoVerify]
 other = "已向 {{.Name}} ({{.ID}}, {{.Code}}) 通过 bus {{.Bus}} 发送切换命令，但显示器暂时未响应 getvcp {{.VCP}} 验证：{{.Error}}"
@@ -620,7 +632,10 @@ other = "错误：{{.Error}}"
 other = "已通过 bus {{.Bus}} 刷新当前输入。"
 
 [CurrentCodeNotFound]
-other = "当前代码未在 config.toml 中找到。"
+other = "当前代码不在输入列表中。"
+
+[TuiLastSelected]
+other = "上次选择的输入：{{.Name}} (bus {{.Bus}}，未验证)"
 
 [TuiCurrentUnknown]
 other = "当前输入：未知"

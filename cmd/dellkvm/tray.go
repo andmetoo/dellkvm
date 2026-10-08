@@ -16,6 +16,7 @@ import (
 	"runtime"
 	"strings"
 	"sync/atomic"
+	"time"
 
 	"fyne.io/systray"
 	"github.com/pelletier/go-toml/v2"
@@ -25,6 +26,8 @@ import (
 // is busy are discarded, never queued for execution after a switch.
 type trayApp struct {
 	cfg                      Config
+	selection                inputSelection
+	activeBus                int
 	busy                     atomic.Bool
 	done                     chan struct{}
 	jobs                     chan func()
@@ -34,6 +37,36 @@ type trayApp struct {
 	inputCodes               []string
 	inputStop, monitorStop   chan struct{}
 	workerDone               chan struct{}
+}
+
+const trayPollInterval = 30 * time.Second
+
+// The last successful write is useful even when switching disconnects this
+// host before it can read the monitor again. Verified distinguishes a read
+// from a sent command; a later read can correct either value.
+type inputSelection struct {
+	bus      int
+	code     string
+	verified bool
+}
+
+func (s inputSelection) onSwitch(result switchResult) inputSelection {
+	return inputSelection{bus: result.Bus, code: result.Code, verified: result.Verified}
+}
+
+func (s inputSelection) onRead(state currentState, err error) inputSelection {
+	if err != nil {
+		s.verified = false
+		return s
+	}
+	return inputSelection{bus: state.Bus, code: state.Code, verified: true}
+}
+
+func (s inputSelection) forBus(bus int) inputSelection {
+	if s.bus != bus {
+		return inputSelection{}
+	}
+	return s
 }
 
 func runTray() error {
@@ -77,29 +110,37 @@ func (a *trayApp) ready() {
 		defer close(a.workerDone)
 		a.reload()
 		a.busy.Store(false)
+		ticker := time.NewTicker(trayPollInterval)
+		defer ticker.Stop()
 		for {
 			select {
 			case job := <-a.jobs:
-				a.inputs.Disable()
-				a.monitors.Disable()
-				job()
-				select {
-				case <-a.done:
-					return
-				default:
+				a.runJob(job)
+			case <-ticker.C:
+				if a.activeBus > 0 && a.busy.CompareAndSwap(false, true) {
+					a.runJob(a.pollCurrent)
 				}
-				if len(a.cfg.Inputs) > 0 {
-					a.inputs.Enable()
-				} else {
-					a.inputs.Disable()
-				}
-				a.monitors.Enable()
-				a.busy.Store(false)
 			case <-a.done:
 				return
 			}
 		}
 	}()
+}
+
+func (a *trayApp) runJob(job func()) {
+	a.inputs.Disable()
+	a.monitors.Disable()
+	job()
+	select {
+	case <-a.done:
+		return
+	default:
+	}
+	if len(a.cfg.Inputs) > 0 {
+		a.inputs.Enable()
+	}
+	a.monitors.Enable()
+	a.busy.Store(false)
 }
 
 func (a *trayApp) bind(item *systray.MenuItem, job func()) {
@@ -151,18 +192,20 @@ func (a *trayApp) report(message string) {
 }
 
 func (a *trayApp) reload() {
-	cfg, path, err := startupConfig()
-	if path != "" {
-		a.configLocation.SetTitle("Config: " + path)
-	}
+	cfg, err := desktopConfig()
+	a.configLocation.SetTitle(configLocationTitle())
 	if err != nil {
 		a.cfg = Config{}
+		a.selection = inputSelection{}
+		a.activeBus = 0
 		a.markCurrent("")
 		a.inputs.Disable()
 		a.report(err.Error())
 		return
 	}
 	a.cfg = cfg
+	a.selection = inputSelection{}
+	a.activeBus = cfg.Bus
 	if a.inputStop != nil {
 		close(a.inputStop)
 	}
@@ -176,17 +219,35 @@ func (a *trayApp) reload() {
 		a.inputItems = append(a.inputItems, item)
 		a.inputCodes = append(a.inputCodes, input.Code)
 		a.bindUntil(item, func() {
-			a.markCurrent("")
 			a.report("Switching to " + input.Name + "…")
-			message, err := switchInput(a.cfg, input.ID)
+			result, err := switchInputDetailed(a.cfg, input.ID)
 			if err != nil {
 				a.report(err.Error())
 				return
 			}
-			a.report(message)
+			a.selection = a.selection.onSwitch(result)
+			a.activeBus = result.Bus
+			a.markCurrent(a.selection.code)
+			a.report(result.Message)
 		}, a.inputStop)
 	}
 	a.refresh()
+}
+
+func configLocationTitle() string {
+	paths, err := configPaths()
+	if err != nil {
+		return "Config: unavailable"
+	}
+	for _, path := range paths {
+		if _, err := os.Stat(path); err == nil {
+			if absolute, err := filepath.Abs(path); err == nil {
+				path = absolute
+			}
+			return "Config: " + path
+		}
+	}
+	return "Config: built-in defaults (optional)"
 }
 
 func desktopConfig() (Config, error) {
@@ -196,9 +257,8 @@ func desktopConfig() (Config, error) {
 	return ensureConfig()
 }
 
-// Interactive entry points persist a starter config before touching hardware.
-// Existing files keep their normal precedence and are never replaced, even
-// when invalid. Read-only status commands continue to use desktopConfig.
+// Explicit initialization persists a starter config. Existing files keep
+// their normal precedence and are never replaced, even when invalid.
 func startupConfig() (Config, string, error) {
 	path, err := editableConfigPath()
 	if err != nil {
@@ -212,7 +272,6 @@ func startupConfig() (Config, string, error) {
 }
 
 func (a *trayApp) refresh() {
-	a.markCurrent("")
 	a.report("Detecting monitors…")
 	l := localizerForConfig(a.cfg)
 	buses, err := detectBuses(l)
@@ -225,8 +284,19 @@ func (a *trayApp) refresh() {
 	}
 	a.monitorItems = nil
 	if err != nil {
-		a.report(err.Error())
+		a.readFailed(err)
 		return
+	}
+	bus := a.cfg.Bus
+	if bus == 0 && len(buses) == 1 {
+		bus = buses[0]
+	}
+	if bus > 0 && a.activeBus != 0 && a.activeBus != bus {
+		a.selection = a.selection.forBus(bus)
+		a.markCurrent(a.selection.code)
+	}
+	if bus > 0 {
+		a.activeBus = bus
 	}
 	for _, bus := range append([]int{0}, buses...) {
 		title := fmt.Sprintf("Monitor %d", bus)
@@ -235,19 +305,61 @@ func (a *trayApp) refresh() {
 		}
 		item := a.monitors.AddSubMenuItemCheckbox(title, "", a.cfg.Bus == bus)
 		a.monitorItems = append(a.monitorItems, item)
-		a.bindUntil(item, func() { a.cfg.Bus = bus; a.refresh() }, a.monitorStop)
+		a.bindUntil(item, func() {
+			a.cfg.Bus = bus
+			if bus > 0 {
+				a.selection = a.selection.forBus(bus)
+				a.markCurrent(a.selection.code)
+				a.activeBus = bus
+			} else {
+				a.selection = inputSelection{}
+				a.markCurrent("")
+				a.activeBus = 0
+			}
+			a.refresh()
+		}, a.monitorStop)
 	}
-	state, err := getCurrentState(a.cfg, l)
-	if err != nil {
-		a.report(err.Error())
+	if bus == 0 {
+		if len(buses) == 0 {
+			a.readFailed(errors.New("no monitors found"))
+		} else {
+			a.readFailed(errors.New("select a monitor to read its current input"))
+		}
 		return
 	}
-	a.markCurrent(state.Code)
+	a.readCurrent(bus, l)
+}
+
+func (a *trayApp) pollCurrent() {
+	a.readCurrent(a.activeBus, localizerForConfig(a.cfg))
+}
+
+func (a *trayApp) readCurrent(bus int, l appLocalizer) {
+	state, err := getCurrentStateOnBus(bus, l)
+	if err != nil {
+		a.readFailed(err)
+		return
+	}
+	a.selection = a.selection.onRead(state, nil)
+	a.markCurrent(a.selection.code)
 	name := state.Code
 	if input, ok := findInputByCode(a.cfg, state.Code); ok {
 		name = input.Name
 	}
 	a.report(fmt.Sprintf("Monitor %d · %s", state.Bus, name))
+}
+
+func (a *trayApp) readFailed(err error) {
+	a.selection = a.selection.onRead(currentState{}, err)
+	if a.selection.code == "" {
+		a.report(err.Error())
+		return
+	}
+	name := a.selection.code
+	if input, ok := findInputByCode(a.cfg, name); ok {
+		name = input.Name
+	}
+	a.report(fmt.Sprintf("Monitor %d · last selected %s (unverified). Read: %v", a.selection.bus, name, err))
 }
 
 func (a *trayApp) markCurrent(code string) {

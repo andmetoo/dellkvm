@@ -507,14 +507,30 @@ func TestSwitchAutoDetectedPrefixOnNoVerify(t *testing.T) {
 		},
 	}
 
-	message, err := switchInput(cfg, "dp")
+	result, err := switchInputDetailed(cfg, "dp")
 	if err != nil {
-		t.Fatalf("switchInput() error = %v, want nil", err)
+		t.Fatalf("switchInputDetailed() error = %v, want nil", err)
+	}
+	if result.Code != "0x0f" || result.Bus != 13 || result.Verified {
+		t.Fatalf("unverified write state = %+v", result)
 	}
 	for _, want := range []string{"Auto-detected bus 13", "Switch command sent"} {
-		if !strings.Contains(message, want) {
-			t.Fatalf("switchInput() message = %q, want %q", message, want)
+		if !strings.Contains(result.Message, want) {
+			t.Fatalf("switchInputDetailed() message = %q, want %q", result.Message, want)
 		}
+	}
+}
+
+func TestCurrentWorksWithoutConfig(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	t.Chdir(t.TempDir())
+	withFakeDDC(t, "single-monitor-current")
+	out, err := captureStdout(t, printCurrent)
+	if err != nil || !strings.Contains(out, "DisplayPort") {
+		t.Fatalf("current without config = %q, %v", out, err)
+	}
+	if _, err := loadConfig(); !errors.Is(err, errConfigNotFound) {
+		t.Fatalf("current created config: %v", err)
 	}
 }
 
@@ -614,6 +630,15 @@ func TestHelperProcess(t *testing.T) {
 			os.Exit(0)
 		}
 		os.Exit(99)
+	case "single-monitor-current":
+		if containsArg(args, "detect") {
+			_, _ = os.Stdout.WriteString("Display 1\n I2C bus: /dev/i2c-13\n")
+		} else if containsArg(args, "getvcp") {
+			_, _ = os.Stdout.WriteString("sl=0x0f\n")
+		} else {
+			os.Exit(99)
+		}
+		os.Exit(0)
 	case "delayed-verification":
 		path := os.Getenv("DDC_TEST_EVENTS")
 		data, _ := os.ReadFile(path)

@@ -11,7 +11,7 @@ other = "用法：dellkvm switch <id>"
 other = "用法：dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "用法：dellkvm [command]\n\n命令：\n  init         创建缺失的初始配置\n  tray         打开系统托盘\n  tui          打开终端界面\n  status --json  输出 JSON 状态\n  detect       列出可用显示器\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开系统托盘。使用 dellkvm tui 打开终端界面。\n配置：运行 dellkvm init，然后编辑输出的配置文件。使用 dellkvm detect 查看显示器，或保留 bus = 0 自动检测。"
+other = "用法：dellkvm [command]\n\n命令：\n  init         创建缺失的初始配置\n  tray         打开系统托盘\n  tui          打开终端界面\n  status --json  输出 JSON 状态\n  detect       列出可用显示器\n  current      显示当前输入\n  switch <id>  切换到已配置的输入\n  help         显示此帮助\n\n不带命令运行会打开系统托盘。使用 dellkvm tui 打开终端界面。\n配置可选；运行 dellkvm init 可自定义输入。使用 dellkvm detect 查看显示器，或保留 bus = 0 自动检测。"
 
 [ConfigReadFailed]
 other = "无法读取 {{.Path}}"
@@ -26,7 +26,7 @@ other = "config.toml 中 bus 必须为 0（自动检测）或正数"
 other = "config.toml 必须至少包含一个 input"
 
 [InputNotFound]
-other = "config.toml 中未找到 id 为 {{.ID}} 的 input"
+other = "未找到 id 为 {{.ID}} 的 input"
 
 [SwitchSentNoVerify]
 other = "已向 {{.Name}} ({{.ID}}, {{.Code}}) 通过 bus {{.Bus}} 发送切换命令，但显示器暂时未响应 getvcp {{.VCP}} 验证：{{.Error}}"
@@ -110,7 +110,10 @@ other = "错误：{{.Error}}"
 other = "已通过 bus {{.Bus}} 刷新当前输入。"
 
 [CurrentCodeNotFound]
-other = "当前代码未在 config.toml 中找到。"
+other = "当前代码不在输入列表中。"
+
+[TuiLastSelected]
+other = "上次选择的输入：{{.Name}} (bus {{.Bus}}，未验证)"
 
 [TuiCurrentUnknown]
 other = "当前输入：未知"
