@@ -58,6 +58,13 @@ type currentState struct {
 	AutoDetected bool
 }
 
+type switchResult struct {
+	Message  string
+	Code     string
+	Bus      int
+	Verified bool
+}
+
 type usageError string
 
 func (e usageError) Error() string {
@@ -313,21 +320,27 @@ func getCurrentStateOnBus(bus int, l appLocalizer) (currentState, error) {
 }
 
 func switchInput(cfg Config, id string) (string, error) {
+	result, err := switchInputDetailed(cfg, id)
+	return result.Message, err
+}
+
+func switchInputDetailed(cfg Config, id string) (switchResult, error) {
 	l := localizerForConfig(cfg)
 	input, ok := findInputByID(cfg, id)
 	if !ok {
-		return "", errors.New(l.T("InputNotFound", map[string]any{"ID": id}))
+		return switchResult{}, errors.New(l.T("InputNotFound", map[string]any{"ID": id}))
 	}
 
 	bus, autoDetected, err := resolveBusForSwitch(cfg, l)
 	if err != nil {
-		return "", err
+		return switchResult{}, err
 	}
 
 	_, err = runDDC(l, "--bus", strconv.Itoa(bus), "--noverify", "setvcp", vcpInputSource, input.Code)
 	if err != nil {
-		return "", err
+		return switchResult{}, err
 	}
+	result := switchResult{Code: input.Code, Bus: bus}
 
 	codeState, err := verifyInput(bus, input.Code, l)
 	if err != nil {
@@ -339,11 +352,12 @@ func switchInput(cfg Config, id string) (string, error) {
 			"VCP":   vcpInputSource,
 			"Error": err,
 		})
-		return withAutoDetectedPrefix(l, bus, autoDetected, message), nil
+		result.Message = withAutoDetectedPrefix(l, bus, autoDetected, message)
+		return result, nil
 	}
 
 	if normalizeCode(codeState.Code) != normalizeCode(input.Code) {
-		return "", errors.New(l.T("SwitchVerificationMismatch", map[string]any{
+		return switchResult{}, errors.New(l.T("SwitchVerificationMismatch", map[string]any{
 			"Name":      input.Name,
 			"ID":        input.ID,
 			"Requested": input.Code,
@@ -351,6 +365,7 @@ func switchInput(cfg Config, id string) (string, error) {
 			"Observed":  codeState.Code,
 		}))
 	}
+	result.Verified = true
 
 	current, ok := findInputByCode(cfg, codeState.Code)
 	if !ok {
@@ -361,7 +376,8 @@ func switchInput(cfg Config, id string) (string, error) {
 			"Bus":         bus,
 			"CurrentCode": codeState.Code,
 		})
-		return withAutoDetectedPrefix(l, bus, autoDetected, message), nil
+		result.Message = withAutoDetectedPrefix(l, bus, autoDetected, message)
+		return result, nil
 	}
 
 	message := l.T("SwitchVerifiedInput", map[string]any{
@@ -372,7 +388,8 @@ func switchInput(cfg Config, id string) (string, error) {
 		"CurrentName": current.Name,
 		"CurrentCode": codeState.Code,
 	})
-	return withAutoDetectedPrefix(l, bus, autoDetected, message), nil
+	result.Message = withAutoDetectedPrefix(l, bus, autoDetected, message)
+	return result, nil
 }
 
 func verifyInput(bus int, requested string, l appLocalizer) (currentState, error) {
@@ -418,7 +435,7 @@ func parseVCPCodeWithLocalizer(raw string, l appLocalizer) (string, error) {
 }
 
 func printCurrent() error {
-	cfg, err := ensureConfig()
+	cfg, err := desktopConfig()
 	if err != nil {
 		return err
 	}

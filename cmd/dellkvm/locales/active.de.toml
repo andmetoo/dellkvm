@@ -11,7 +11,7 @@ other = "Verwendung: dellkvm switch <id>"
 other = "Verwendung: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  init         fehlende Startkonfiguration erstellen\n  tray         Infobereich öffnen\n  tui          Terminal-Oberfläche öffnen\n  status --json  Status als JSON ausgeben\n  detect       listet verfügbare Monitore auf\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird das Infobereich-Symbol geöffnet. dellkvm tui öffnet die TUI.\nKonfiguration: Führe dellkvm init aus und bearbeite die angezeigte Datei. dellkvm detect listet Monitore auf; bus = 0 aktiviert die Auto-Erkennung."
+other = "Verwendung: dellkvm [Befehl]\n\nBefehle:\n  init         fehlende Startkonfiguration erstellen\n  tray         Infobereich öffnen\n  tui          Terminal-Oberfläche öffnen\n  status --json  Status als JSON ausgeben\n  detect       listet verfügbare Monitore auf\n  current      zeigt den aktuellen Eingang\n  switch <id>  schaltet auf einen konfigurierten Eingang\n  help         zeigt diese Hilfe\n\nOhne Befehl wird das Infobereich-Symbol geöffnet. dellkvm tui öffnet die TUI.\nDie Konfiguration ist optional; mit dellkvm init kannst du Eingänge anpassen. dellkvm detect listet Monitore auf; bus = 0 aktiviert die Auto-Erkennung."
 
 [ConfigReadFailed]
 other = "{{.Path}} konnte nicht gelesen werden"
@@ -26,7 +26,7 @@ other = "in config.toml muss bus 0 für Auto-Erkennung oder eine positive Nummer
 other = "config.toml muss mindestens einen input enthalten"
 
 [InputNotFound]
-other = "input mit id {{.ID}} wurde in config.toml nicht gefunden"
+other = "input mit id {{.ID}} wurde nicht gefunden"
 
 [SwitchSentNoVerify]
 other = "Umschaltbefehl an {{.Name}} ({{.ID}}, {{.Code}}) über bus {{.Bus}} gesendet, aber der Monitor antwortet noch nicht auf die getvcp-{{.VCP}}-Prüfung: {{.Error}}"
@@ -110,7 +110,10 @@ other = "Fehler: {{.Error}}"
 other = "Aktueller Eingang über bus {{.Bus}} aktualisiert."
 
 [CurrentCodeNotFound]
-other = "Aktueller Code wurde in config.toml nicht gefunden."
+other = "Der aktuelle Code steht nicht in der Eingangsliste."
+
+[TuiLastSelected]
+other = "Zuletzt gewählt: {{.Name}} (Bus {{.Bus}}, nicht bestätigt)"
 
 [TuiCurrentUnknown]
 other = "Aktueller Eingang: unbekannt"

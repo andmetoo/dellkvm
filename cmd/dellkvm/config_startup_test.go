@@ -144,6 +144,9 @@ func TestDesktopConfigDoesNotCreateFiles(t *testing.T) {
 	if _, err := desktopConfig(); err != nil {
 		t.Fatal(err)
 	}
+	if got := configLocationTitle(); got != "Config: built-in defaults (optional)" {
+		t.Fatalf("tray config label = %q", got)
+	}
 	if _, err := loadConfig(); !errors.Is(err, errConfigNotFound) {
 		t.Fatalf("read-only loader created config: %v", err)
 	}

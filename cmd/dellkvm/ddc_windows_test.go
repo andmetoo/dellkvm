@@ -43,12 +43,13 @@ func TestWindowsSwitchDoesNotRequireInitialRead(t *testing.T) {
 	verifyDelay = 0
 	t.Cleanup(func() { execMonitorCommand, verifyDelay = oldCommand, oldDelay })
 
-	message, err := switchInput(Config{Inputs: []Input{{ID: "dp", Name: "DisplayPort", Code: "0x0f"}}}, "dp")
+	result, err := switchInputDetailed(Config{Inputs: []Input{{ID: "dp", Name: "DisplayPort", Code: "0x0f"}}}, "dp")
 	if err != nil {
-		t.Fatalf("switchInput: %v", err)
+		t.Fatalf("switchInputDetailed: %v", err)
 	}
-	if !strings.Contains(message, "Auto-detected bus 1") || !strings.Contains(message, "0x0f") {
-		t.Fatalf("switchInput message = %q", message)
+	if !strings.Contains(result.Message, "Auto-detected bus 1") || !strings.Contains(result.Message, "0x0f") ||
+		!result.Verified || result.Bus != 1 || result.Code != "0x0f" {
+		t.Fatalf("switchInputDetailed result = %+v", result)
 	}
 	if _, err := os.Stat(path); err != nil {
 		t.Fatalf("set was not called: %v", err)

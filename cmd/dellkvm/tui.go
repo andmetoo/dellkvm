@@ -8,10 +8,13 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"strings"
+	"time"
 )
 
+const tuiPollInterval = 30 * time.Second
+
 func runTUI() error {
-	cfg, _, err := startupConfig()
+	cfg, err := desktopConfig()
 	if err != nil {
 		return err
 	}
@@ -50,6 +53,7 @@ type tuiModel struct {
 	currentCode string
 	currentName string
 	currentBus  int
+	verified    bool
 	status      string
 	busy        bool
 	buses       []int
@@ -66,9 +70,11 @@ type currentMsg struct {
 }
 
 type switchMsg struct {
-	message string
-	err     error
+	result switchResult
+	err    error
 }
+
+type pollTickMsg struct{}
 
 func newTUIModel(cfg Config) tuiModel {
 	l := localizerForConfig(cfg)
@@ -105,9 +111,9 @@ func newTUIModel(cfg Config) tuiModel {
 
 func (m tuiModel) Init() tea.Cmd {
 	if m.cfg.Bus == 0 {
-		return discoverMonitorsCmd(m.localizer)
+		return tea.Batch(discoverMonitorsCmd(m.localizer), pollTickCmd())
 	}
-	return refreshCurrentCmd(m.cfg, m.localizer)
+	return tea.Batch(refreshCurrentCmd(m.cfg, m.localizer), pollTickCmd())
 }
 
 func (m tuiModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -125,6 +131,17 @@ func (m tuiModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.updateMonitors(msg)
 	case switchMsg:
 		return m.updateSwitch(msg)
+	case pollTickMsg:
+		if m.busy {
+			return m, pollTickCmd()
+		}
+		m.busy = true
+		m.status = m.localizer.T("Refreshing", nil)
+		m.resizeList()
+		if m.cfg.Bus == 0 {
+			return m, tea.Batch(discoverMonitorsCmd(m.localizer), pollTickCmd())
+		}
+		return m, tea.Batch(refreshCurrentCmd(m.cfg, m.localizer), pollTickCmd())
 	}
 
 	var cmd tea.Cmd
@@ -225,6 +242,7 @@ func (m *tuiModel) selectNextMonitor() {
 	}
 	m.cfg.Bus = next
 	m.currentCode, m.currentName, m.currentBus = "", "", 0
+	m.verified = false
 	m.status = fmt.Sprintf("Monitor bus %d selected. Reading current input…", next)
 	m.busy = true
 	m.resizeList()
@@ -233,14 +251,15 @@ func (m *tuiModel) selectNextMonitor() {
 func (m tuiModel) updateCurrent(msg currentMsg) (tea.Model, tea.Cmd) {
 	m.busy = false
 	if msg.err != nil {
-		m.currentCode, m.currentName, m.currentBus = "", "", 0
+		m.verified = false
 		m.status = m.localizer.T("ErrorPrefix", map[string]any{"Error": msg.err.Error()})
 		m.resizeList()
-		return m, m.list.SetItems(itemsFromConfig(m.cfg, ""))
+		return m, nil
 	}
 
 	m.currentCode = msg.state.Code
 	m.currentBus = msg.state.Bus
+	m.verified = true
 	input, ok := findInputByCode(m.cfg, msg.state.Code)
 	if ok {
 		m.currentName = input.Name
@@ -265,12 +284,16 @@ func (m tuiModel) updateSwitch(msg switchMsg) (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 
-	m.status = msg.message
-	// Switching can disconnect this host. Preserve the verification result
-	// instead of replacing it with an immediate failing refresh.
-	m.currentCode, m.currentName, m.currentBus = "", "", 0
+	m.status = msg.result.Message
+	m.currentCode = msg.result.Code
+	m.currentBus = msg.result.Bus
+	m.verified = msg.result.Verified
+	m.currentName = ""
+	if input, ok := findInputByCode(m.cfg, m.currentCode); ok {
+		m.currentName = input.Name
+	}
 	m.resizeList()
-	return m, m.list.SetItems(itemsFromConfig(m.cfg, ""))
+	return m, m.list.SetItems(itemsFromConfig(m.cfg, m.currentCode))
 }
 
 func (m *tuiModel) resizeList() {
@@ -299,7 +322,16 @@ func (m tuiModel) renderTitle() string {
 
 func (m tuiModel) renderCurrent() string {
 	current := m.localizer.T("TuiCurrentUnknown", nil)
-	if m.currentName != "" {
+	if m.currentCode != "" && !m.verified {
+		name := m.currentName
+		if name == "" {
+			name = m.currentCode
+		}
+		current = m.localizer.T("TuiLastSelected", map[string]any{
+			"Name": name,
+			"Bus":  m.currentBus,
+		})
+	} else if m.currentName != "" {
 		current = m.localizer.T("TuiCurrentInput", map[string]any{
 			"Name": m.currentName,
 			"Code": m.currentCode,
@@ -351,9 +383,13 @@ func discoverMonitorsCmd(l appLocalizer) tea.Cmd {
 
 func switchInputCmd(cfg Config, id string) tea.Cmd {
 	return func() tea.Msg {
-		message, err := switchInput(cfg, id)
-		return switchMsg{message: message, err: err}
+		result, err := switchInputDetailed(cfg, id)
+		return switchMsg{result: result, err: err}
 	}
+}
+
+func pollTickCmd() tea.Cmd {
+	return tea.Tick(tuiPollInterval, func(time.Time) tea.Msg { return pollTickMsg{} })
 }
 
 func itemsFromConfig(cfg Config, currentCode string) []list.Item {

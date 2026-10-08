@@ -11,7 +11,7 @@ other = "Usage: dellkvm switch <id>"
 other = "Usage: dellkvm [tray|tui|init|detect|current|switch <id>|status --json|help]"
 
 [Help]
-other = "Usage: dellkvm [command]\n\nCommands:\n  init         create a starter config if missing\n  tray         open the system tray\n  tui          open the terminal UI\n  status --json  print desktop status as JSON\n  detect       list available monitors\n  current      show the current input\n  switch <id>  switch to a configured input\n  help         show this help\n\nRun without a command to open the system tray. Use dellkvm tui for the terminal UI.\nConfig: run dellkvm init, then edit the printed file. Use dellkvm detect to list monitors, or keep bus = 0 for auto-detect."
+other = "Usage: dellkvm [command]\n\nCommands:\n  init         create a starter config if missing\n  tray         open the system tray\n  tui          open the terminal UI\n  status --json  print desktop status as JSON\n  detect       list available monitors\n  current      show the current input\n  switch <id>  switch to a configured input\n  help         show this help\n\nRun without a command to open the system tray. Use dellkvm tui for the terminal UI.\nConfig is optional; run dellkvm init to customize inputs. Use dellkvm detect to list monitors, or keep bus = 0 for auto-detect."
 
 [ConfigReadFailed]
 other = "failed to read {{.Path}}"
@@ -26,7 +26,7 @@ other = "config.toml bus must be 0 for auto-detect or a positive number"
 other = "config.toml must contain at least one input"
 
 [InputNotFound]
-other = "input with id {{.ID}} was not found in config.toml"
+other = "input with id {{.ID}} was not found"
 
 [SwitchSentNoVerify]
 other = "Switch command sent to {{.Name}} ({{.ID}}, {{.Code}}) through bus {{.Bus}}, but the monitor did not answer the getvcp {{.VCP}} verification yet: {{.Error}}"
@@ -110,7 +110,10 @@ other = "Error: {{.Error}}"
 other = "Current input refreshed through bus {{.Bus}}."
 
 [CurrentCodeNotFound]
-other = "Current code was not found in config.toml."
+other = "Current code is not in the input list."
+
+[TuiLastSelected]
+other = "Last selected: {{.Name}} (bus {{.Bus}}, unverified)"
 
 [TuiCurrentUnknown]
 other = "Current input: unknown"
