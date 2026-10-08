@@ -43,7 +43,10 @@ done
 
 [ "$(uname -s)" = Linux ] || { echo 'Linux is required' >&2; exit 1; }
 bin_dir=$HOME/.local/bin
-data_dir=${XDG_DATA_HOME:-$HOME/.local/share}/applications
+data_home=${XDG_DATA_HOME:-$HOME/.local/share}
+data_dir=$data_home/applications
+icon_dir=$data_home/icons/hicolor/256x256/apps
+icon_file=$icon_dir/dellkvm.png
 autostart_dir=${XDG_CONFIG_HOME:-$HOME/.config}/autostart
 desktop_file=$data_dir/dellkvm.desktop
 autostart_file=$autostart_dir/dellkvm.desktop
@@ -56,6 +59,7 @@ remove_managed_desktop() {
 
 if [ "$uninstall" = yes ]; then
   rm -f "$bin_dir/dellkvm"
+  rm -f "$icon_file"
   remove_managed_desktop "$desktop_file"
   remove_managed_desktop "$autostart_file"
   echo 'dellkvm removed; your config.toml was kept'
@@ -100,13 +104,14 @@ awk -v target="$archive" '$2 == target { print; found=1 } END { if (!found) exit
     exit 1
   }
 (cd "$tmp" && sha256sum -c archive.sha256)
-tar -xzf "$tmp/$archive" -C "$tmp" dellkvm
+tar -xzf "$tmp/$archive" -C "$tmp" dellkvm cmd/dellkvm/assets/icon.png
 
-mkdir -p "$bin_dir" "$data_dir"
+mkdir -p "$bin_dir" "$data_dir" "$icon_dir"
 staged=$bin_dir/.dellkvm.new.$$
 install -m 0755 "$tmp/dellkvm" "$staged"
 mv -f "$staged" "$bin_dir/dellkvm"
 staged=
+install -m 0644 "$tmp/cmd/dellkvm/assets/icon.png" "$icon_file"
 
 desktop_exec=$(printf '%s' "$bin_dir/dellkvm" | sed 's/\\/\\\\/g; s/"/\\"/g; s/`/\\`/g; s/\$/\\$/g')
 cat > "$tmp/dellkvm.desktop" <<EOF
@@ -115,7 +120,7 @@ Type=Application
 Name=dellkvm
 Comment=Switch monitor inputs from the system tray
 Exec="$desktop_exec" tray
-Icon=video-display
+Icon=dellkvm
 Terminal=false
 Categories=Utility;HardwareSettings;
 StartupNotify=false

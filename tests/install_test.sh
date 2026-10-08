@@ -4,7 +4,7 @@ set -eu
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 fixture=$(mktemp -d)
 trap 'rm -rf "$fixture"' 0
-mkdir -p "$fixture/home" "$fixture/release" "$fixture/fakebin"
+mkdir -p "$fixture/home" "$fixture/release/cmd/dellkvm/assets" "$fixture/fakebin"
 
 case "$(uname -m)" in
   x86_64|amd64) arch=amd64 ;;
@@ -13,7 +13,8 @@ case "$(uname -m)" in
 esac
 archive=dellkvm_1.2.3_linux_$arch.tar.gz
 printf '#!/bin/sh\necho fixture\n' > "$fixture/release/dellkvm"
-tar -czf "$fixture/release/$archive" -C "$fixture/release" dellkvm
+cp "$root/cmd/dellkvm/assets/icon.png" "$fixture/release/cmd/dellkvm/assets/icon.png"
+tar -czf "$fixture/release/$archive" -C "$fixture/release" dellkvm cmd/dellkvm/assets/icon.png
 (cd "$fixture/release" && sha256sum "$archive" > checksums.txt)
 
 cat > "$fixture/fakebin/curl" <<'EOF'
@@ -45,7 +46,9 @@ export PATH
 
 sh "$root/install.sh"
 test -x "$HOME/.local/bin/dellkvm"
+test -f "$XDG_DATA_HOME/icons/hicolor/256x256/apps/dellkvm.png"
 grep -Fqx "Exec=\"$HOME/.local/bin/dellkvm\" tray" "$XDG_CONFIG_HOME/autostart/dellkvm.desktop"
+grep -Fqx 'Icon=dellkvm' "$XDG_CONFIG_HOME/autostart/dellkvm.desktop"
 test -f "$XDG_DATA_HOME/applications/dellkvm.desktop"
 
 printf 'my config\n' > "$XDG_CONFIG_HOME/config.toml"
@@ -61,6 +64,7 @@ sh "$root/install.sh" --version v1.2.3 --no-autostart
 test ! -e "$XDG_CONFIG_HOME/autostart/dellkvm.desktop"
 sh "$root/install.sh" --uninstall
 test ! -e "$HOME/.local/bin/dellkvm"
+test ! -e "$XDG_DATA_HOME/icons/hicolor/256x256/apps/dellkvm.png"
 test ! -e "$XDG_DATA_HOME/applications/dellkvm.desktop"
 test -f "$XDG_CONFIG_HOME/config.toml"
 echo 'Linux installer checks passed'

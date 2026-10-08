@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="dellkvm monitor input switch">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#142132"/>
+  <rect x="9" y="12" width="46" height="34" rx="5" fill="#eaf5ff"/>
+  <rect x="12" y="15" width="40" height="28" rx="2" fill="#20354b"/>
+  <path d="M17 25h27m-6-5 6 5-6 5" fill="none" stroke="#54d5f3" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"/>
+  <path d="M47 34H20m6-5-6 5 6 5" fill="none" stroke="#b5a3ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"/>
+  <rect x="29" y="46" width="6" height="6" fill="#eaf5ff"/>
+  <rect x="21" y="51" width="22" height="4" rx="2" fill="#eaf5ff"/>
+</svg>
